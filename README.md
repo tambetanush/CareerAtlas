@@ -62,6 +62,26 @@ Here is a visual walkthrough of the platform:
 
 ![Job Finder](static/8%20jobs.png)
 
+## Evaluation & Benchmarks
+
+To ensure the reliability and accuracy of CareerAtlas, we developed an extensive evaluation framework using **LLM-as-a-Judge** methodologies and field-level metrics. Our evaluation process rigorous tests the core agents:
+
+### 1. Gap Analysis Agent
+We conducted a head-to-head comparison between our RAG-augmented agent (Pinecone + BM25 + Jina Reranker) and a Naive LLM across 10 realistic career transition personas. An independent LLM judge (Google Gemini) scored both approaches, proving that our agent significantly outperforms the baseline in relevance, accuracy, and actionability by grounding recommendations in real job-market taxonomy.
+![Gap Analysis Evaluation](static/eval_Gap_Analysis_Evaluation_0.png)
+
+### 2. Resume Extraction Agent
+We systematically tested the extraction pipeline using ground-truth test cases, measuring field-level metrics (Precision, Recall, F1 for lists; Accuracy for strings). Real PDF resumes were also scored out of 10 by an LLM-as-Judge to guarantee high fidelity in parsing skills and experiences.
+![Resume Extraction Evaluation](static/eval_resume_extraction_eval_0.png)
+
+### 3. Deep Researcher Agent
+This LangGraph-based agent (which plans, searches via Tavily, and structures learning pathways) was evaluated on diverse profiles. An OpenRouter judge validated the quality of the generated roadmaps, scoring the pathways based on resource relevance and curriculum structure.
+![Deep Researcher Evaluation](static/eval_deep_researcher_evaluation_notebook_0.png)
+
+### 4. Job Hunter Agent
+Using Adzuna for search and Jina for embeddings, the job hunter was evaluated on mock profiles to ensure high role relevance, location compliance, and skill alignment.
+![Job Hunter Evaluation](static/eval_job_hunter_evaluation_0.png)
+
 ## Contributors
 
 - **Tanush Tambe** - Resume Extractor and Job Finder, Evaluation Notebooks

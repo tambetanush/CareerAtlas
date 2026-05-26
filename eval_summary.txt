@@ -1,0 +1,960 @@
+
+==================================================
+Notebook: deep_researcher_evaluation_notebook.ipynb
+==================================================
+MARKDOWN: # Full Deep Researcher & Roadmap Generation
+
+This notebook executes the entire LangGraph-based `deep_researcher` agent.
+It plans, searches the web (using Tavily), structures a learning pathway, validates links via HTTP, and judges the quality with OpenRouter Gemma-3.
+Finally, it maps the pathway into the roadmap UI schema.
+MARKDOWN: ### 1. API Keys & LLM Setup
+
+Configure your API keys here.
+MARKDOWN: ### 2. Schemas
+MARKDOWN: ### 3. Prompts
+MARKDOWN: ### 4. Search and Validation Utilities
+MARKDOWN: ### 5. LangGraph Agent Setup
+MARKDOWN: ### 6. Roadmap Generation
+MARKDOWN: ### 7. Execution Loop
+STREAM TEXT: Starting Deep Researcher Evaluation...
+
+
+==================================================
+Evaluating Profile 1: Machine Learning Engineer
+==================================================
+-> Plan: best PyTorch production deployment course 2026
+-> Search: Gathered 5 links.
+-> Critic: continue - The provided notes only cover a single, very basic PyTorch course. This is insufficient to build a comprehensive learning pathway for a Machine Learning Engineer role, especially considering the need for production deployment knowledge. We need more resources covering intermediate and advanced PyTorch concepts, deployment strategies (e.g., TorchServe, cloud platforms), and best practices for productionizing models. The current information lacks depth and breadth to confidently recommend a complete learning path.
+-> Plan: advanced PyTorch deployment best practices 2026 production environments
+-> Search: Gathered 5 links.
+-> Critic: continue - The provided notes are extremely limited. They only offer a single, very basic PyTorch course and a troubleshooting tip for a common PyTorch import error. This is insufficient to build a comprehensive learning pathway for a Machine Learning Engineer targeting production deployment, especially considering the 2026 timeframe. We lack resources covering advanced deployment practices, model serving, optimization for production, and other crucial skills. The course identified is also very short (2h 25m) and likely only covers introductory material.
+-> Plan: PyTorch production deployment tools and frameworks 2026 best practices
+-> Search: Gathered 5 links.
+-> Critic: Max iterations reached, forcing structure.
+-> Structurer: Built pathway.
+-> Validate: Kept 6/8 links.
+-> Judge: Score=4.375, Verdict=pass
+
+✅ FINAL ROADMAP GENERATED:
+  - [Foundations] Master Python Basics (0 resources)
+  - [Intermediate] Master PyTorch (3 resources)
+  - [Advanced] Master PyTorch Production Deployment (3 resources)
+
+==================================================
+Evaluating Profile 2: Frontend Developer
+==================================================
+-> Plan: best React Server Components course 2026 project-based
+-> Search: Gathered 5 links.
+-> Critic: continue - The provided notes only mention a general React course and do not address the specific gap of React Server Components. We need resources specifically focused on RSCs to build a learning pathway.
+-> Plan: React Server Components tutorial 2026 practical examples deployment
+-> Search: Gathered 5 links.
+-> Critic: continue - The provided notes only offer a general React course and a blog post discussing the state of React Server Components in 2026. Neither resource specifically focuses on *teaching* React Server Components, nor do they provide a project-based learning experience. We lack resources to cover the 'React Server Components' gap with a practical, project-based course, and deployment examples are also missing. The 'best course' link is a general React course, not specifically RSC focused.
+-> Plan: React Server Components 2026 course advanced patterns production deployment
+-> Search: Gathered 5 links.
+-> Critic: Max iterations reached, forcing structure.
+-> Structurer: Built pathway.
+-> Validate: Kept 3/4 links.
+-> Judge: Score=4.2, Verdict=pass
+
+✅ FINAL ROADMAP GENERATED:
+  - [Intermediate] Master React Server Components (3 resources)
+
+==================================================
+Evaluating Profile 3: Backend Developer
+==================================================
+-> Plan: best GraphQL API design courses 2026 backend developer
+-> Search: Gathered 5 links.
+-> Critic: continue - The single source provided is a very high-level overview stating GraphQL is becoming popular and courses are evolving. It doesn't list any specific courses, certifications, or resources suitable for a backend developer looking to fill gaps in GraphQL API design. We need concrete, up-to-date resources to build a learning pathway.
+-> Plan: GraphQL API design best practices 2026 backend performance scalability
+-> Search: Gathered 5 links.
+-> Critic: continue - The provided notes are very limited. While they mention GraphQL's increasing relevance and some use cases, they lack specific course recommendations or detailed best practices for API design, performance, and scalability in 2026. The 'best practices' link primarily compares GraphQL to REST and gRPC, rather than focusing on GraphQL design itself. We need more resources to build a comprehensive learning pathway for a backend developer.
+-> Plan: GraphQL API design patterns 2026 backend developer best practices examples
+-> Search: Gathered 5 links.
+-> Critic: Max iterations reached, forcing structure.
+-> Structurer: Built pathway.
+-> Validate: Kept 6/8 links.
+-> Judge: Score=4.33, Verdict=pass
+
+✅ FINAL ROADMAP GENERATED:
+  - [Foundations] Master REST APIs (2 resources)
+  - [Intermediate] Master Node.js (2 resources)
+  - [Intermediate] Master GraphQL API Design (2 resources)
+
+==================================================
+Evaluating Profile 4: DevOps Engineer
+==================================================
+-> Plan: Kubernetes administration certification 2026 CKA/CKAD/CKS curriculum comparison
+-> Search: Gathered 5 links.
+-> Critic: continue - We have only one note, and it only touches on the CKA certification, providing a very high-level overview. It doesn't cover CKAD or CKS in detail, nor does it offer specific curriculum details or resource recommendations for any of them. We need more information to build a comprehensive learning pathway addressing all Kubernetes administration gaps (which includes aspects beyond just the CKA focus).
+-> Plan: Kubernetes administration training 2026 hands-on labs practical exercises
+-> Search: Gathered 5 links.
+-> Critic: continue - The provided notes only touch on Kubernetes certifications (CKA/CKAD/CKS) and a hands-on lab environment (Portworx). While helpful, this doesn't provide a comprehensive learning pathway covering all aspects of Kubernetes administration. We lack resources for core administration tasks beyond certification prep, such as cluster setup, networking, security, monitoring, and troubleshooting. The 'published' dates are also missing, making it difficult to assess the currency of the information. We need more resources to build a complete and up-to-date learning plan.
+-> Plan: Kubernetes administration course 2026 hands-on labs CKA CKAD CKS preparation
+-> Search: Gathered 5 links.
+-> Critic: Max iterations reached, forcing structure.
+-> Structurer: Built pathway.
+-> Validate: Kept 4/5 links.
+-> Judge: Score=4.3, Verdict=pass
+
+✅ FINAL ROADMAP GENERATED:
+  - [Foundations] Master Docker Containers (1 resources)
+  - [Intermediate] Master Kubernetes Administration (3 resources)
+
+==================================================
+Evaluating Profile 5: Data Engineer
+==================================================
+-> Plan: best dbt course 2026 data modeling analytics engineering
+-> Search: Gathered 5 links.
+-> Critic: continue - We only have information on dbt currently. We lack any resources or information regarding Apache Kafka. Therefore, we cannot yet structure a complete learning pathway covering both required technologies.
+-> Plan: best Apache Kafka course 2026 streaming data pipelines real-time analytics
+-> Search: Gathered 5 links.
+-> Critic: continue - While we have identified courses for both dbt and Kafka, the Kafka course is limited to in-person training in specific locations (Nairobi and Mombasa) and may not be accessible to all learners. Additionally, the dates are fixed and relatively far out (June/July 2026). We lack information on comprehensive, readily available online Kafka courses. The dbt courses are good starting points, but we need to explore a wider range of options, including more advanced courses and potentially free resources, to build a complete learning pathway. We also need to assess the publication dates of the resources to ensure they are current.
+-> Plan: advanced Apache Kafka courses 2026 real-time data engineering best practices
+-> Search: Gathered 5 links.
+-> Critic: Max iterations reached, forcing structure.
+-> Structurer: Built pathway.
+-> Validate: Kept 7/10 links.
+-> Judge: Score=4.2, Verdict=pass
+
+✅ FINAL ROADMAP GENERATED:
+  - [Foundations] Master Advanced SQL (1 resources)
+  - [Intermediate] Master dbt (Data Build Tool) (1 resources)
+  - [Intermediate] Master Python (1 resources)
+  - [Advanced] Master Distributed Systems (1 resources)
+  - [Advanced] Master Apache Kafka (3 resources)
+MARKDOWN: ### 8. Statistics and Graphs
+STREAM TEXT: /tmp/ipykernel_4027/3486344980.py:8: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.barplot(data=df, x="profile", y="score", palette="viridis")
+EXTRACTED IMAGE: eval_deep_researcher_evaluation_notebook_0.png
+
+==================================================
+Notebook: Gap_Analysis_Evaluation.ipynb
+==================================================
+MARKDOWN: # 🎯 CareerAtlas Gap Analysis — Agent vs Naive LLM Evaluation
+
+### What this notebook proves
+
+**Why is my RAG agent better than just calling an LLM and asking?**
+
+We run **two approaches** on realistic user profiles:
+
+|           | **Approach A: My Agent**                       | **Approach B: Naive LLM** |
+| --------- | ---------------------------------------------- | ------------------------- |
+| Retrieval | Pinecone Semantic + BM25 + RRF + Jina Reranker | ❌ None                   |
+| Context   | Real job-market taxonomy data                  | Only LLM's training data  |
+| Pipeline  | 4-stage hybrid retrieval → structured LLM      | Direct prompt → LLM       |
+
+An **independent LLM judge** (Google Gemini) then compares both outputs side-by-side and scores them 1–10.
+MARKDOWN: ---
+
+## 0. Environment Setup
+MARKDOWN: ---
+
+## 1. Build the Agent Pipeline (Exact Replica)
+STREAM TEXT: ✅ Hybrid retrieval defined.
+MARKDOWN: ---
+
+## 2. Build the Naive LLM Baseline
+
+This is what happens if you **just ask an LLM** the same question **without any retrieval**.
+MARKDOWN: ---
+
+## 3. Define Realistic Test Personas (10 Total)
+
+These are simulated profiles built to look like real-world resumes, containing messy, specific skills rather than just broad categories.
+MARKDOWN: ---
+
+## 4. Run Both Approaches on Each Persona
+STREAM TEXT: ======================================================================
+🧪 Backend → ML Engineer
+   Skills: Python, Django, FastAPI, PostgreSQL, Redis, Docker, Git, RESTful APIs, AWS EC2, Jenkins, Basic NumPy
+   Target: Machine Learning Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 4.34s — 6 gaps
+      1. MLOps fundamentals [concept] — 100%
+      2. Model evaluation and metrics [concept] — 96%
+      3. Statistics and probability [concept] — 94%
+      4. scikit-learn [framework] — 92%
+      5. Experiment tracking (MLflow) [tool] — 90%
+      6. Linear Algebra [concept] — 88%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.38s — 6 gaps
+      1. TensorFlow [framework] — 98%
+      2. R [language] — 95%
+      3. Deep Learning [concept] — 92%
+      4. Jupyter Notebook [tool] — 90%
+      5. PyTorch [framework] — 88%
+      6. Unsupervised Learning [concept] — 85%
+
+======================================================================
+🧪 Data Analyst → Data Scientist
+   Skills: SQL, Advanced Excel, Tableau, Google Analytics, Python, Pandas, Matplotlib, A/B Testing, Basic Statistics, Jupyter Notebooks
+   Target: Data Scientist
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 2.36s — 6 gaps
+      1. Experimentation and A/B testing [concept] — 100%
+      2. Statistical modelling [concept] — 98%
+      3. Data storytelling and communication [concept] — 95%
+      4. Machine learning algorithms [concept] — 90%
+      5. Feature engineering [concept] — 85%
+      6. Exploratory data analysis [concept] — 80%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.38s — 6 gaps
+      1. R [language] — 98%
+      2. Scikit-learn [framework] — 95%
+      3. Deep Learning [concept] — 92%
+      4. Apache Spark [tool] — 90%
+      5. Time Series Analysis [concept] — 88%
+      6. Storytelling with Data [soft] — 85%
+
+======================================================================
+🧪 Fresh CS Grad → Backend Engineer
+   Skills: C++, Java, Object-Oriented Programming (OOP), Data Structures, Algorithms, HTML/CSS, Basic SQL, GitHub, Academic Python
+   Target: Backend Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 3.86s — 6 gaps
+      1. REST API design [concept] — 43%
+      2. SQL [language] — 18%
+      3. System design [concept] — 6%
+      4. Redis [tool] — 3%
+      5. Docker [tool] — 5%
+      6. Message queues [concept] — 6%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.21s — 6 gaps
+      1. JavaScript [language] — 95%
+      2. Express.js [framework] — 92%
+      3. System Design [concept] — 90%
+      4. Docker [tool] — 88%
+      5. Python [language] — 85%
+      6. Microservices Architecture [concept] — 80%
+
+======================================================================
+🧪 DevOps → ML Engineer (Switch)
+   Skills: Kubernetes, Docker, Terraform, AWS (S3, VPC, IAM), CI/CD Pipelines, Bash scripting, Python automation scripts, Linux Administration, Prometheus, Grafana
+   Target: Machine Learning Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 3.59s — 6 gaps
+      1. Model evaluation and metrics [concept] — 92%
+      2. scikit-learn [framework] — 90%
+      3. PyTorch [framework] — 89%
+      4. MLOps fundamentals [concept] — 88%
+      5. Statistics and probability [concept] — 87%
+      6. Experiment tracking (MLflow) [tool] — 86%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.32s — 6 gaps
+      1. TensorFlow [language] — 98%
+      2. PyTorch [framework] — 95%
+      3. Deep Learning [concept] — 92%
+      4. Scikit-learn [tool] — 88%
+      5. Natural Language Processing [concept] — 85%
+      6. Collaboration and Communication [soft] — 80%
+
+======================================================================
+🧪 Frontend Dev → Full Stack Engineer
+   Skills: React, Vue.js, CSS, Tailwind, HTML5, JavaScript, TypeScript, Webpack, NPM, Figma, Jest
+   Target: Backend Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 2.13s — 6 gaps
+      1. REST API design [concept] — 7%
+      2. SQL [language] — 5%
+      3. Authentication and authorisation [concept] — 2%
+      4. System design [concept] — 2%
+      5. Redis [tool] — 1%
+      6. Docker [tool] — 1%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.07s — 6 gaps
+      1. Java [language] — 98%
+      2. Express.js [framework] — 95%
+      3. Database Modeling [concept] — 92%
+      4. Docker [tool] — 90%
+      5. Python [language] — 88%
+      6. Microservices Architecture [concept] — 85%
+
+======================================================================
+🧪 IT Support → DevOps Engineer
+   Skills: Windows Server, Active Directory, Hardware Troubleshooting, Basic Bash, Networking Fundamentals, TCP/IP, Helpdesk Ticketing, Customer Service
+   Target: DevOps Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 2.41s — 6 gaps
+      1. Docker [tool] — 80%
+      2. Kubernetes [tool] — 90%
+      3. CI/CD pipelines [concept] — 70%
+      4. Git and version control [tool] — 60%
+      5. Infrastructure as Code (Terraform) [tool] — 50%
+      6. Monitoring and observability [concept] — 40%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.28s — 6 gaps
+      1. Python [language] — 98%
+      2. Docker [tool] — 95%
+      3. Kubernetes [framework] — 92%
+      4. CI/CD Pipelines [concept] — 90%
+      5. Ansible [tool] — 88%
+      6. Collaboration and Teamwork [soft] — 85%
+
+======================================================================
+🧪 Marketing Manager → Data Analyst
+   Skills: Google Analytics, Microsoft Excel, SEO, Content Marketing, Basic SQL, HubSpot, Social Media Management, Campaign Strategy
+   Target: Data Analyst
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 2.39s — 6 gaps
+      1. Tableau or Power BI [tool] — 8%
+      2. SQL [language] — 4%
+      3. Data storytelling and communication [soft] — 1%
+      4. Data cleaning and wrangling [concept] — 0%
+      5. Python for data analysis [language] — 0%
+      6. Business metrics and KPIs [concept] — 0%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 1.18s — 6 gaps
+      1. Python [language] — 95%
+      2. Tableau [tool] — 90%
+      3. Statistics [concept] — 92%
+      4. CRISP-DM [framework] — 88%
+      5. Power BI [tool] — 85%
+      6. Data Storytelling [concept] — 80%
+
+======================================================================
+🧪 Software Engineer → ML Engineer
+   Skills: Java, Spring Boot, MySQL, Microservices, REST APIs, Git, Agile/Scrum, Basic Python, JUnit
+   Target: Machine Learning Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 7.49s — 6 gaps
+      1. Python [language] — 100%
+      2. scikit-learn [framework] — 96%
+      3. Statistics and probability [concept] — 94%
+      4. Docker [tool] — 92%
+      5. MLOps fundamentals [concept] — 90%
+      6. NumPy [tool] — 88%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 4.36s — 6 gaps
+      1. Advanced Python [language] — 98%
+      2. TensorFlow [framework] — 95%
+      3. Deep Learning [concept] — 92%
+      4. Jupyter Notebook [tool] — 90%
+      5. PyTorch [framework] — 88%
+      6. Natural Language Processing [concept] — 85%
+
+======================================================================
+🧪 Data Analyst → ML Engineer
+   Skills: SQL, Python, Pandas, Seaborn, Tableau, Scikit-learn (Basic), Basic Statistics, Linear Regression, Jupyter
+   Target: Machine Learning Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 7.45s — 6 gaps
+      1. MLOps fundamentals [concept] — 94%
+      2. Docker [tool] — 97%
+      3. Model evaluation and metrics [concept] — 69%
+      4. Feature engineering [concept] — 54%
+      5. Experiment tracking (MLflow) [tool] — 53%
+      6. NumPy [tool] — 81%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 5.33s — 6 gaps
+      1. TensorFlow [framework] — 98%
+      2. R [language] — 95%
+      3. Deep Learning [concept] — 92%
+      4. Keras [tool] — 90%
+      5. Natural Language Processing [concept] — 88%
+      6. PyTorch [framework] — 85%
+
+======================================================================
+🧪 Mobile Dev → Backend Engineer
+   Skills: Swift, iOS SDK, Xcode, CoreData, Firebase, SQLite, UI/UX Design, App Store Deployment, REST API Consumption
+   Target: Backend Engineer
+======================================================================
+
+   🤖 Running AGENT (Retrieval + LLM)...
+   ✅ Agent done in 6.44s — 6 gaps
+      1. REST API design [concept] — 85%
+      2. SQL [language] — 80%
+      3. System design [concept] — 78%
+      4. Authentication and authorisation [concept] — 75%
+      5. Docker [tool] — 70%
+      6. Redis [tool] — 65%
+
+   💬 Running NAIVE LLM (No Retrieval)...
+   ✅ Naive done in 5.20s — 6 gaps
+      1. Java [language] — 98%
+      2. Spring Boot [framework] — 95%
+      3. Database Modeling [concept] — 92%
+      4. Docker [tool] — 90%
+      5. Python [language] — 88%
+      6. Microservices Architecture [concept] — 85%
+
+✅ All 10 personas processed.
+MARKDOWN: ---
+
+## 5. LLM-as-Judge: Head-to-Head Comparison using Google Gemini
+
+An independent judge (Google Gemini 2.5 Flash) compares both outputs side-by-side to determine which is better for real users.
+MARKDOWN: ---
+
+## 6. Graphical Evaluation Scorecard
+
+Visualising the difference in quality between the Agent pipeline and the Naive LLM.
+EXTRACTED IMAGE: eval_Gap_Analysis_Evaluation_0.png
+STREAM TEXT: ======================================================================
+📝 WHY THE AGENT WINS (Judge's Reasoning)
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+🧪 Backend → ML Engineer → Machine Learning Engineer
+   Winner: 🤖 Agent
+   🗣️  System A provides a more targeted and strategically sound set of skill gaps, focusing on foundational knowledge like MLOps and mathematical principles that are critical for an MLE transition. Its recommendations are better grounded in real job market needs due to its retrieval mechanism, ensuring a more efficient and relevant learning path. System B, by contrast, includes less optimal choices like R and broad concepts, making its guidance less precise and effective for the user's specific career goal.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 7 (▲2) — The identified gaps, including MLOps and foundational math, are highly relevant and crucial for a backend developer transitioning to an MLE role in today's market.
+     accuracy       : Agent 9 vs Naive 7 (▲2) — The system correctly identifies new skill areas without significant overlap with the user's existing Python, Django, or basic NumPy expertise.
+     specificity    : Agent 8 vs Naive 7 (▲1) — Most gaps are specific (e.g., MLflow, scikit-learn), though 'MLOps fundamentals' is a broad concept, and one prerequisite self-referenced 'scikit-learn'.
+     grounding      : Agent 10 vs Naive 7 (▲3) — The recommendations align well with current MLE job requirements and the system's described retrieval pipeline strongly suggests grounding in real-world data.
+     actionability  : Agent 9 vs Naive 8 (▲1) — Each gap includes clear categories, difficulties, required levels, prerequisites, and explanations, enabling immediate learning plan creation.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Data Analyst → Data Scientist → Data Scientist
+   Winner: 🤖 Agent
+   🗣️  System A provides significantly more specific, well-grounded, and actionable recommendations by leveraging real job-market data. While it had a minor accuracy issue with 'A/B Testing,' its overall quality, particularly in detailing prerequisites and aligning with actual Data Scientist roles, far surpasses System B's more generic and occasionally inaccurate suggestions, which lacked real-world grounding.
+
+   Key dimension differences:
+     relevance      : Agent 10 vs Naive 8 (▲2) — All identified gaps are highly relevant and foundational core skills for a Data Scientist role in today's job market.
+     accuracy       : Agent 6 vs Naive 9 (▼3) — It incorrectly identifies 'Experimentation and A/B testing' as a primary gap, despite the user explicitly listing 'A/B Testing' as a current skill.
+     specificity    : Agent 9 vs Naive 6 (▲3) — Gaps are specific concepts, and the output includes precise prerequisites, difficulty levels, and required proficiency levels for each skill.
+     grounding      : Agent 10 vs Naive 6 (▲4) — The output aligns perfectly with common Data Scientist job requirements and is explicitly stated to be grounded in real job-market taxonomy data.
+     actionability  : Agent 9 vs Naive 7 (▲2) — Each gap is clearly defined with difficulty, required level, and specific prerequisites, making it very straightforward to plan a learning path.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Fresh CS Grad → Backend Engineer → Backend Engineer
+   Winner: 🤖 Agent
+   🗣️  System A significantly outperforms System B due to its superior grounding in real job market requirements and logical skill dependencies, which likely stems from its retrieval-augmented generation. It provides a more accurate, universally relevant, and actionable learning path for a Backend Engineer. System B, relying solely on its training knowledge, falters with less relevant technology recommendations and inaccurate prerequisites, making its output less reliable for career guidance.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 7 (▲2) — All recommended skills (REST API design, System Design, Docker, Redis, Message Queues) are highly pertinent and foundational for a Backend Engineer role in today's market.
+     accuracy       : Agent 9 vs Naive 6 (▲3) — The system correctly identifies new critical skills and recommends an upgrade for 'SQL' rather than simply listing skills the user already possesses.
+     specificity    : Agent 9 vs Naive 7 (▲2) — The skills are concrete (e.g., 'Redis', 'Docker'), and the prerequisites are specific and logically sound, aiding a precise learning path.
+     grounding      : Agent 9 vs Naive 5 (▲4) — The recommendations align well with common industry demands for backend roles, and the logical prerequisites strongly suggest grounding in real job market taxonomy data as described.
+     actionability  : Agent 9 vs Naive 6 (▲3) — The clear structure, specific skills, difficulty, required level, and accurate prerequisites make it exceptionally easy for the user to plan their learning immediately.
+
+──────────────────────────────────────────────────────────────────────
+🧪 DevOps → ML Engineer (Switch) → Machine Learning Engineer
+   Winner: 🤖 Agent
+   🗣️  System A significantly outperforms System B by providing a more tailored, specific, and actionable gap analysis. Its recommendations are clearly grounded in real job market requirements, leveraging the user's DevOps background with MLOps fundamentals and offering precise prerequisites that enable immediate learning plan construction. System B's output is more generic, less specific in its recommendations and prerequisites, and misses opportunities to leverage the user's existing strengths.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 8 (▲1) — All listed skills are highly relevant for a Machine Learning Engineer role, with MLOps being particularly pertinent for a DevOps background.
+     accuracy       : Agent 10 vs Naive 9 (▲1) — The system correctly identifies specific missing ML skills and concepts, without listing skills the user already possesses.
+     specificity    : Agent 9 vs Naive 7 (▲2) — Skills like 'PyTorch', 'scikit-learn', 'MLOps fundamentals', and 'MLflow' are very concrete, and prerequisites are precise.
+     grounding      : Agent 10 vs Naive 7 (▲3) — The recommendations are strongly grounded in real job requirements, especially by including MLOps fundamentals which bridges the user's existing DevOps expertise to the target role.
+     actionability  : Agent 9 vs Naive 7 (▲2) — Each skill has clear categories, difficulty, required levels, and specific prerequisites, making it very straightforward to form a learning plan.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Frontend Dev → Full Stack Engineer → Backend Engineer
+   Winner: 🤖 Agent
+   🗣️  System A is significantly better because its recommendations are precisely grounded in realistic job market data, evident from its accurate and logical prerequisites and the selection of skills. System B, relying solely on its internal training, produced generic and often incorrect prerequisite information, which severely hinders the user's ability to create an effective and accurate learning plan.
+
+   Key dimension differences:
+     accuracy       : Agent 10 vs Naive 3 (▲7) — It correctly identifies genuine gaps without suggesting skills the user already possesses or frontend-focused skills.
+     specificity    : Agent 9 vs Naive 6 (▲3) — The gaps are concrete (e.g., Redis, Docker, SQL) and prerequisites are specific, making them clear learning targets.
+     grounding      : Agent 10 vs Naive 5 (▲5) — The skills are well-known, fundamental backend requirements, strongly supported by the system's described use of real job-market data.
+     actionability  : Agent 9 vs Naive 4 (▲5) — The output clearly lists skills, difficulty, required level, and specific prerequisites, enabling immediate learning plan creation.
+
+──────────────────────────────────────────────────────────────────────
+🧪 IT Support → DevOps Engineer → DevOps Engineer
+   Winner: 🤖 Agent
+   🗣️  System A provides a more accurate, specific, and well-grounded gap analysis by leveraging real job market data through its retrieval pipeline. It precisely excludes existing skills, offers concrete prerequisites, and focuses squarely on technical skills, making its recommendations highly actionable. System B, relying solely on its internal knowledge, exhibits minor inaccuracies in assessing existing skills and provides some less specific prerequisites, suggesting a less precise understanding of the user's profile and current job market demands.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 8 (▲1) — All recommended skills are highly relevant and essential for a DevOps Engineer role in today's market.
+     accuracy       : Agent 9 vs Naive 7 (▲2) — The system correctly identifies gaps and avoids recommending skills the user already possesses, while appropriately leveraging existing skills as prerequisites.
+     specificity    : Agent 9 vs Naive 7 (▲2) — The recommended skills are concrete and specific (e.g., 'Terraform' instead of generic 'IaC'), and the prerequisites are well-defined.
+     grounding      : Agent 9 vs Naive 7 (▲2) — The skills and their justifications are strongly aligned with current industry job market demands for DevOps engineers, indicating strong grounding in real data.
+     actionability  : Agent 9 vs Naive 7 (▲2) — The structured output with specific skills, difficulty, required levels, and clear prerequisites makes it highly actionable for creating a learning plan.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Marketing Manager → Data Analyst → Data Analyst
+   Winner: 🤖 Agent
+   🗣️  System A demonstrably outperforms System B across all critical evaluation dimensions. Its use of real job market data via retrieval results in highly relevant, accurate, specific, and well-grounded recommendations, making the output far more actionable for a user planning a career transition. System B, relying solely on its internal knowledge, frequently hallucinates illogical prerequisites and provides generic advice.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 8 (▲1) — All suggested skills are highly pertinent and crucial for a successful transition to a Data Analyst role.
+     accuracy       : Agent 9 vs Naive 6 (▲3) — It accurately identifies the need to upgrade 'Basic SQL' to 'advanced SQL' and avoids listing skills the user already possesses.
+     specificity    : Agent 9 vs Naive 6 (▲3) — The gaps are specific tools, languages, and concepts, with precise difficulty, level, and logical prerequisites.
+     grounding      : Agent 10 vs Naive 4 (▲6) — The recommendations are strongly grounded in current job market requirements, reflecting practical needs of a Data Analyst.
+     actionability  : Agent 9 vs Naive 5 (▲4) — The clear definition of each gap, along with difficulty, level, and prerequisites, enables the user to construct a clear learning roadmap.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Software Engineer → ML Engineer → Machine Learning Engineer
+   Winner: 🤖 Agent
+   🗣️  System A provides a more practical and grounded set of recommendations, incorporating essential engineering practices like Docker and MLOps which are crucial for Machine Learning Engineers in the real world. Its structured approach with specific skill levels and prerequisites offers a clearer and more actionable learning path for a software engineer transitioning to ML, demonstrating superior grounding and actionability.
+
+   Key dimension differences:
+     relevance      : Agent 10 vs Naive 9 (▲1) — All recommended skills like Python, scikit-learn, Statistics, Docker, and MLOps are highly relevant and foundational for a Machine Learning Engineer role in today's job market.
+     specificity    : Agent 9 vs Naive 8 (▲1) — The skills are mostly specific (e.g., 'scikit-learn', 'NumPy', 'Docker'), and prerequisites are concrete, though 'Statistics and probability' and 'MLOps fundamentals' are broader concepts.
+     grounding      : Agent 10 vs Naive 7 (▲3) — The inclusion of practical engineering skills like Docker and MLOps strongly suggests the recommendations are grounded in real-world job requirements and industry practices.
+     actionability  : Agent 9 vs Naive 8 (▲1) — The clear specification of skills, required levels, and explicit prerequisites (e.g., 'Python' before 'NumPy' before 'scikit-learn') provides a highly actionable learning roadmap.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Data Analyst → ML Engineer → Machine Learning Engineer
+   Winner: 🤖 Agent
+   🗣️  System A provides significantly more relevant and actionable recommendations for a Machine Learning Engineer role, with a strong focus on modern MLOps practices and specific tools. It accurately assesses the user's existing skills and identifies precise gaps. System B, in contrast, includes an irrelevant recommendation (R) and misses crucial areas, demonstrating a less grounded understanding of current job market needs for the target role.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 6 (▲3) — The identified gaps like MLOps, Docker, experiment tracking, and specific ML concepts are highly relevant to becoming a Machine Learning Engineer.
+     accuracy       : Agent 9 vs Naive 4 (▲5) — It accurately identifies skills the user lacks and also highlights areas for deeper learning that build on existing basic knowledge, like model evaluation and feature engineering.
+     specificity    : Agent 9 vs Naive 6 (▲3) — The gaps are concrete, mentioning specific tools like Docker and MLflow, and distinct concepts like MLOps fundamentals rather than overly broad categories.
+     grounding      : Agent 10 vs Naive 4 (▲6) — The recommendations are strongly grounded in real job market requirements for modern MLEs, particularly the emphasis on MLOps practices.
+     actionability  : Agent 9 vs Naive 5 (▲4) — Each gap includes clear categories, difficulties, required levels, and specific prerequisites, making it easy to construct a structured learning path.
+
+──────────────────────────────────────────────────────────────────────
+🧪 Mobile Dev → Backend Engineer → Backend Engineer
+   Winner: 🤖 Agent
+   🗣️  System A effectively leverages real job-market data to provide highly accurate, specific, and actionable gap analyses with logical prerequisites, crucial for effective career coaching. System B, relying solely on its internal knowledge, hallucinates incorrect prerequisites and generalises excessively, making its suggestions impractical and potentially misleading for the user.
+
+   Key dimension differences:
+     relevance      : Agent 9 vs Naive 8 (▲1) — The identified skills (REST API design, SQL, System design, Docker, Redis) are highly pertinent and commonly required for a Backend Engineer role in today's job market.
+     accuracy       : Agent 9 vs Naive 3 (▲6) — The system correctly identified skills the user doesn't possess, distinguishing between consumption and design of APIs, and between iOS-specific database knowledge and general SQL.
+     specificity    : Agent 9 vs Naive 6 (▲3) — The gaps are concrete and specific (e.g., 'SQL', 'Docker', 'Redis'), and the difficulty/level/prerequisites are clearly stated, aiding in precise understanding.
+     grounding      : Agent 9 vs Naive 2 (▲7) — The recommendations align well with real job requirements for backend engineers, and the logical prerequisites reflect actual learning dependencies, suggesting a strong grounding in external data.
+     actionability  : Agent 9 vs Naive 2 (▲7) — The output is highly actionable due to clear skill definitions, logical prerequisites, and specified difficulty/level, allowing the user to immediately construct a structured learning plan.
+
+==================================================
+Notebook: job_hunter_evaluation.ipynb
+==================================================
+MARKDOWN: # Job Hunter Evaluation Notebook
+
+This notebook evaluates the `job_hunter` agent which uses Adzuna for search, Jina for embeddings, and Gemini for job explanations.
+The evaluation is performed by an OpenRouter LLM-as-judge on 5 mock profiles.
+MARKDOWN: ### 1. API Keys & LLM Setup
+MARKDOWN: ### 2. Schemas
+MARKDOWN: ### 3. Core Job Hunter Agent Logic
+MARKDOWN: ### 4. Evaluation Logic
+MARKDOWN: ### 5. Mock Profiles & Execution Loop
+STREAM TEXT: Starting Job Hunter Evaluation...
+
+
+==================================================
+Evaluating Profile 1: Frontend Developer in Remote
+==================================================
+Agent matched 3 jobs.
+  [Job 1] Frontend Developer @ InfoVision Inc. (Match: 66%)
+  [Job 2] Frontend Developer @ Tata Consultancy Services (Match: 61%)
+  [Job 3] Frontend Developer @ Tata Consultancy Services (Match: 61%)
+
+🤖 LLM Judge Score: 2.75/5.0 (Verdict: FAIL)
+Summary: The agent demonstrates good role relevance and reasonable explanation quality, but fails significantly on location compliance and skill alignment. It completely disregarded the remote location preference and didn't effectively prioritize or highlight the candidate's specified skills in the job matches. Therefore, the agent fails to meet the requirements.
+
+==================================================
+Evaluating Profile 2: Data Scientist in Bangalore
+==================================================
+Agent matched 3 jobs.
+  [Job 1] Contract Data Scientist @ Signal Foundry (Match: 57%)
+  [Job 2] Senior Data Scientist @ Northstar Systems (Match: 56%)
+  [Job 3] Data Scientist @ Atlas Labs (Match: 56%)
+
+🤖 LLM Judge Score: 3.5/5.0 (Verdict: PASS)
+Summary: The agent performed well, successfully identifying relevant roles in the specified location. Skill alignment is decent, but the skill overlap score is a concern. Explanation quality is adequate but could be improved with more specific and nuanced reasoning. Overall, the agent meets the passing criteria.
+
+==================================================
+Evaluating Profile 3: Product Manager in Hybrid
+==================================================
+Agent matched 3 jobs.
+  [Job 1] Product Manager @ Tata Communications (Match: 56%)
+  [Job 2] Product Manager @ Innodata Inc. (Match: 56%)
+  [Job 3] Product Manager @ enGen Global (Match: 56%)
+
+🤖 LLM Judge Score: 3.25/5.0 (Verdict: PASS)
+Summary: The agent successfully identified relevant roles but failed to respect the location preference and provided a misleading skill alignment score. The explanations were helpful but could be improved. Despite the shortcomings, the overall score is above the passing threshold due to strong role relevance and explanation quality.
+
+==================================================
+Evaluating Profile 4: Backend Developer in Pune
+==================================================
+Agent matched 3 jobs.
+  [Job 1] Mid-level Backend Developer @ Vector Harbor (Match: 55%)
+  [Job 2] Senior Backend Developer @ Northstar Systems (Match: 55%)
+  [Job 3] Entry-level Backend Developer @ Summit Works (Match: 54%)
+
+🤖 LLM Judge Score: 3.25/5.0 (Verdict: PASS)
+Summary: The agent performed well in terms of location compliance and skill alignment, but could improve in role relevance by focusing on a specific experience level. The explanations were adequate but could be more insightful. The overall score meets the passing threshold.
+
+==================================================
+Evaluating Profile 5: UI/UX Designer in Delhi
+==================================================
+Agent matched 3 jobs.
+  [Job 1] Mid-level UI/UX Designer @ Vector Harbor (Match: 58%)
+  [Job 2] Entry-level UI/UX Designer @ Summit Works (Match: 57%)
+  [Job 3] Contract UI/UX Designer @ Signal Foundry (Match: 57%)
+
+🤖 LLM Judge Score: 3.25/5.0 (Verdict: PASS)
+Summary: The agent performed well in identifying relevant roles in the correct location. The explanations are adequate but could be more detailed and insightful. The low skill overlap score is a concern and suggests a need for improved job description analysis. Overall, the agent meets the passing criteria.
+MARKDOWN: ### 6. Results Summary
+STREAM TEXT: /tmp/ipykernel_2659/1442171652.py:8: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.barplot(data=df, x="profile", y="score", palette="mako")
+EXTRACTED IMAGE: eval_job_hunter_evaluation_0.png
+
+==================================================
+Notebook: resume_extraction_eval.ipynb
+==================================================
+MARKDOWN: # Resume Extraction Agent — Evaluation Notebook
+
+**Objective**: Systematically test the resume extraction pipeline using:
+
+- **10 hardcoded ground-truth test cases** (ML Engineer, Data Scientist, Backend Engineer, Frontend Engineer)
+- **Field-level metrics**: Precision, Recall, F1 for list fields; Accuracy for string fields
+- **LLM-as-Judge**: OpenRouter (Gemma) scores extraction quality out of 10 for real PDF resumes
+
+---
+MARKDOWN: ## 1. Install Dependencies
+MARKDOWN: ## 2. Configuration _(edit before running)_
+MARKDOWN: ## 3. Pydantic Schemas
+MARKDOWN: ## 4. Core Utility Functions
+MARKDOWN: ## 5. PDF Extraction Functions
+MARKDOWN: ## 6. LLM Factory
+MARKDOWN: ## 7. Extraction Pipeline
+MARKDOWN: ## 8. Hardcoded Ground-Truth Test Cases
+
+10 synthetic resumes with annotated ground truth across 4 job roles.  
+Edge cases covered: sparse resume, missing phone, unicode characters, overlapping dates, no formal education, multi-location, ambiguous dates.
+MARKDOWN: ## 9. Evaluation Metric Functions
+
+- **List fields** (skills, languages, etc.): token-normalised **Precision / Recall / F1**
+- **String fields** (name, email, location): **exact match** after normalisation
+- **Structured fields** (experience, education): best-match via **token overlap**
+- **Boolean fields** (current_role_present, has_summary): exact match accuracy
+STREAM TEXT: Evaluation metrics defined
+MARKDOWN: ## 10. Run Evaluation on Hardcoded Test Cases
+STREAM TEXT: 🔄 Running extraction + evaluation on test cases...
+   (Gemini API free-tier safe mode enabled)
+STREAM TEXT: Evaluating test cases:   0%|          | 0/10 [00:00<?, ?it/s]
+STREAM TEXT: ============================================================
+▶ [1/10] [ml-engineer-1] Senior ML Engineer — well-structured, complete resume
+   full_name     : 'John Smith'
+   email         : 'john.smith@email.com'
+   skills        : ['Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision', 'MLOps']...
+   prog_langs    : ['Python', 'C++', 'Java', 'SQL', 'R']
+   exp count     : 2
+   overall_score : 0.8813
+   ⏳ Cooling down for 14s...
+STREAM TEXT: Evaluating test cases:  10%|█         | 1/10 [00:24<03:38, 24.25s/it]
+STREAM TEXT: ============================================================
+▶ [2/10] [ml-engineer-2] ML Engineer — NLP specialist, NO phone number (edge case)
+   full_name     : 'Priya Sharma'
+   email         : 'priya.sharma@ml.io'
+   skills        : ['NLP', 'Large Language Models', 'Text Classification', 'Sentiment Analysis', 'Multilingual NLP']...
+   prog_langs    : ['Python', 'SQL']
+   exp count     : 2
+   overall_score : 0.9275
+   ⏳ Cooling down for 13s...
+STREAM TEXT: Evaluating test cases:  20%|██        | 2/10 [00:46<03:03, 22.95s/it]
+STREAM TEXT: ============================================================
+▶ [3/10] [ml-engineer-3] Junior ML Engineer — fresh grad, sparse resume (edge case: minimal data)
+   full_name     : 'Alex Johnson'
+   email         : 'alexj@university.edu'
+   skills        : ['Machine Learning', 'PyTorch', 'TensorFlow', 'Data Analysis', 'HuggingFace']...
+   prog_langs    : ['Python']
+   exp count     : 0
+   overall_score : 0.9496
+   ⏳ Cooling down for 11s...
+STREAM TEXT: Evaluating test cases:  30%|███       | 3/10 [01:13<02:53, 24.79s/it]
+STREAM TEXT: ============================================================
+▶ [4/10] [data-scientist-1] Data Scientist — analytics heavy, multiple certs
+   full_name     : 'Maria Garcia'
+   email         : 'maria.garcia@datasci.com'
+   skills        : ['Statistical Modeling', 'Machine Learning', 'A', 'B Testing', 'Feature Engineering']...
+   prog_langs    : ['Python', 'R', 'SQL']
+   exp count     : 2
+   overall_score : 0.8790
+   ⏳ Cooling down for 15s...
+STREAM TEXT: Evaluating test cases:  40%|████      | 4/10 [01:39<02:31, 25.24s/it]
+STREAM TEXT: ============================================================
+▶ [5/10] [data-scientist-2] Data Scientist — ambiguous dates, gap in employment (edge case)
+   full_name     : 'Chen Wei'
+   email         : 'chen.wei@outlook.com'
+   skills        : ['Time-Series Forecasting', 'Supply Chain Analytics', 'EDA', 'Data Storytelling', 'Model Monitoring']...
+   prog_langs    : ['Python', 'SQL', 'MATLAB']
+   exp count     : 3
+   overall_score : 0.8828
+   ⏳ Cooling down for 13s...
+STREAM TEXT: Evaluating test cases:  50%|█████     | 5/10 [02:05<02:08, 25.73s/it]
+STREAM TEXT: ============================================================
+▶ [6/10] [backend-engineer-1] Backend Engineer — Python/FastAPI, microservices
+   full_name     : 'Rahul Mehta'
+   email         : 'rahul.mehta@gmail.com'
+   skills        : ['REST API Design', 'Microservices', 'System Design', 'Database Optimisation', 'CI']...
+   prog_langs    : ['Python', 'SQL', 'Bash', 'Go']
+   exp count     : 2
+   overall_score : 0.8775
+   ⏳ Cooling down for 15s...
+STREAM TEXT: Evaluating test cases:  60%|██████    | 6/10 [02:34<01:46, 26.63s/it]
+STREAM TEXT: ============================================================
+▶ [7/10] [backend-engineer-2] Backend Engineer — Java/Spring, enterprise stack (edge case: long career)
+   full_name     : 'Dmitri Volkov'
+   email         : 'dmitri.volkov@corp.ru'
+   skills        : ['Enterprise Architecture', 'Microservices', 'Distributed Systems', 'TDD', 'Code Review']...
+   prog_langs    : ['Java', 'SQL', 'Kotlin', 'Bash']
+   exp count     : 3
+   overall_score : 0.8801
+   ⏳ Cooling down for 14s...
+STREAM TEXT: Evaluating test cases:  70%|███████   | 7/10 [03:03<01:22, 27.56s/it]
+STREAM TEXT: ============================================================
+▶ [8/10] [backend-engineer-3] Backend Engineer — NO formal education listed (edge case)
+   full_name     : 'Sam Torres'
+   email         : 'sam@torres.dev'
+   skills        : ['GraphQL', 'REST APIs', 'Caching Strategies', 'Performance Optimisation', 'Open Source Development']...
+   prog_langs    : ['JavaScript', 'TypeScript', 'SQL', 'Bash']
+   exp count     : 2
+   overall_score : 0.9300
+   ⏳ Cooling down for 12s...
+STREAM TEXT: Evaluating test cases:  80%|████████  | 8/10 [03:38<01:00, 30.01s/it]
+STREAM TEXT: ============================================================
+▶ [9/10] [frontend-engineer-1] Frontend Engineer — React/TypeScript, design system experience
+   full_name     : 'Aisha Okonkwo'
+   email         : 'aisha.okonkwo@email.com'
+   skills        : ['Component Architecture', 'Design Systems', 'Web Performance', 'Accessibility (WCAG)', 'Cross-Browser Compatibility']...
+   prog_langs    : ['JavaScript', 'TypeScript', 'HTML', 'CSS']
+   exp count     : 2
+   overall_score : 0.8863
+   ⏳ Cooling down for 10s...
+STREAM TEXT: Evaluating test cases:  90%|█████████ | 9/10 [04:03<00:28, 28.47s/it]
+STREAM TEXT: Evaluating test cases: 100%|██████████| 10/10 [04:38<00:00, 27.83s/it]
+STREAM TEXT: full_name     : 'Søren Møller'
+   email         : 'soren.moller@dev.io'
+   skills        : ['Accessibility', 'UI Design', 'Design-to-Code', 'Responsive Design', 'CSS Animation']...
+   prog_langs    : ['JavaScript', 'HTML', 'CSS']
+   exp count     : 3
+   overall_score : 0.8841
+
+✅ Evaluation complete
+⏱ Total runtime: 4.64 min
+
+Summary:
+                    id               role status  overall_score
+0        ml-engineer-1        ml-engineer     ok         0.8813
+1        ml-engineer-2        ml-engineer     ok         0.9275
+2        ml-engineer-3        ml-engineer     ok         0.9496
+3     data-scientist-1     data-scientist     ok         0.8790
+4     data-scientist-2     data-scientist     ok         0.8828
+5   backend-engineer-1   backend-engineer     ok         0.8775
+6   backend-engineer-2   backend-engineer     ok         0.8801
+7   backend-engineer-3   backend-engineer     ok         0.9300
+8  frontend-engineer-1  frontend-engineer     ok         0.8863
+9  frontend-engineer-2  frontend-engineer     ok         0.8841
+STREAM TEXT: ======================================================================
+EVALUATION RESULTS — HARDCODED TEST CASES
+======================================================================
+                 id              role status  overall_score  full_name  email  skills_f1  prog_lang_f1  exp_title_recall  exp_company_recall  education_recall
+      ml-engineer-1       ml-engineer     ok          0.881      1.000  1.000      0.364         1.000             1.000               1.000             1.000
+      ml-engineer-2       ml-engineer     ok          0.927      1.000  1.000      0.444         1.000             1.000               1.000             1.000
+      ml-engineer-3       ml-engineer     ok          0.950      1.000  1.000      0.588         1.000             1.000               1.000             1.000
+   data-scientist-1    data-scientist     ok          0.879      1.000  1.000      0.345         1.000             1.000               1.000             1.000
+   data-scientist-2    data-scientist     ok          0.883      1.000  1.000      0.435         1.000             1.000               1.000             1.000
+ backend-engineer-1  backend-engineer     ok          0.877      1.000  1.000      0.333         1.000             1.000               1.000             1.000
+ backend-engineer-2  backend-engineer     ok          0.880      1.000  1.000      0.414         1.000             1.000               1.000             1.000
+ backend-engineer-3  backend-engineer     ok          0.930      1.000  1.000      0.429         1.000             1.000               1.000             1.000
+frontend-engineer-1 frontend-engineer     ok          0.886      1.000  1.000      0.462         1.000             1.000               1.000             1.000
+frontend-engineer-2 frontend-engineer     ok          0.884      1.000  1.000      0.444         1.000             1.000               1.000             1.000
+
+── AVERAGE SCORES BY ROLE ──
+                   overall_score  skills_f1  prog_lang_f1  exp_title_recall  exp_company_recall  education_recall
+role                                                                                                             
+backend-engineer           0.896      0.392         1.000             1.000               1.000             1.000
+data-scientist             0.881      0.390         1.000             1.000               1.000             1.000
+frontend-engineer          0.885      0.453         1.000             1.000               1.000             1.000
+ml-engineer                0.919      0.465         1.000             1.000               1.000             1.000
+
+── GRAND MEAN overall_score : 0.8978 ──
+EXTRACTED IMAGE: eval_resume_extraction_eval_0.png
+STREAM TEXT: Chart saved to eval_summary.png
+EXTRACTED IMAGE: eval_resume_extraction_eval_1.png
+STREAM TEXT: Heatmap saved to eval_heatmap.png
+STREAM TEXT: ── FIELD-LEVEL DIAGNOSTIC (scores < 0.7) ──
+
+  [ml-engineer-1]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.231
+    ⚠  skills_f1                      = 0.364
+
+  [ml-engineer-2]
+    ⚠  skills_precision               = 0.286
+    ⚠  skills_f1                      = 0.444
+
+  [ml-engineer-3]
+    ⚠  skills_precision               = 0.417
+    ⚠  skills_f1                      = 0.588
+
+  [data-scientist-1]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.217
+    ⚠  skills_f1                      = 0.345
+
+  [data-scientist-2]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.278
+    ⚠  skills_f1                      = 0.435
+
+  [backend-engineer-1]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.208
+    ⚠  skills_f1                      = 0.333
+
+  [backend-engineer-2]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.261
+    ⚠  skills_f1                      = 0.414
+
+  [backend-engineer-3]
+    ⚠  skills_precision               = 0.273
+    ⚠  skills_f1                      = 0.429
+
+  [frontend-engineer-1]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.300
+    ⚠  skills_f1                      = 0.462
+
+  [frontend-engineer-2]
+    ⚠  phone                          = 0.000
+    ⚠  skills_precision               = 0.286
+    ⚠  skills_f1                      = 0.444
+MARKDOWN: ## 11. Process Real PDF Resumes from `/testdata`
+
+Upload your PDF resumes to `/testdata` in Colab, then run this section.
+MARKDOWN: ## 12. LLM-as-Judge Evaluation (OpenRouter / Gemma)
+
+For each PDF, the judge receives:
+
+1. The **raw resume text** (from PDF extraction)
+2. The **agent's structured JSON output**
+
+It evaluates 5 dimensions and returns a score 0–10.
+STREAM TEXT: Overall  : 8.6/10
+   Scores   : {'completeness': 9, 'accuracy': 8, 'hallucination': 10, 'field_quality': 8, 'structure': 8}
+   Strengths: ['Good extraction of skills and certifications.', 'Successfully parsed experience details including dates and company names.', 'No hallucinations detected.']
+   Weaknesses: ['Missing full name and contact information.', 'Experience description bullets are often overly verbose and include extraneous information (e.g., institute names within bullet points).', 'Education start dates are missing.']
+
+Judging: 17488801.pdf
+STREAM TEXT: Overall  : 8.0/10
+   Scores   : {'completeness': 8, 'accuracy': 7, 'hallucination': 10, 'field_quality': 7, 'structure': 8}
+   Strengths: ['No hallucination of facts.', 'Good structure of experience and education sections.', 'Successfully extracted key skills and experience details.']
+   Weaknesses: ['Missing full name.', 'Contact information is completely missing.', "Skills list contains redundant entries (e.g., 'Mechanical Engineer' as a skill).", 'Dates are not always parsed correctly (e.g., education start date).']
+   Errors: ['Missing contact information.']
+
+Judging: 14049846.pdf
+STREAM TEXT: Overall  : 7.4/10
+   Scores   : {'completeness': 8, 'accuracy': 7, 'hallucination': 9, 'field_quality': 7, 'structure': 6}
+   Strengths: ['Good at extracting skills and listing them.', 'No significant hallucinations were detected.', 'Successfully extracted education details.']
+   Weaknesses: ['Incomplete extraction of experience details, especially start/end dates and titles.', 'Poor structure of experience bullet points - often runs on as one long string.', 'Missing full name and contact information.']
+   Errors: ['Missing full name and contact details are significant omissions.']
+
+Judging: 12472574.pdf
+STREAM TEXT: Overall  : 7.6/10
+   Scores   : {'completeness': 8, 'accuracy': 7, 'hallucination': 9, 'field_quality': 6, 'structure': 8}
+   Strengths: ['Good extraction of experience details including dates and titles', 'Minimal hallucination - mostly pulls directly from text', 'Successfully extracted education information']
+   Weaknesses: ['Skills list is very noisy and includes many irrelevant terms', 'Contact information is missing', 'Location data within experience is often null']
+
+Judging: 21807224.pdf
+STREAM TEXT: Overall  : 8.2/10
+   Scores   : {'completeness': 8, 'accuracy': 8, 'hallucination': 10, 'field_quality': 7, 'structure': 8}
+   Strengths: ['Good extraction of experience details including dates and descriptions', 'Certifications are well extracted', 'No hallucination detected']
+   Weaknesses: ['Missing full name', 'Education is incomplete (missing degree and field of study)', 'Skills list could be more refined and deduplicated']
+
+Judging: 27040860.pdf
+STREAM TEXT: Overall  : 8.0/10
+   Scores   : {'completeness': 8, 'accuracy': 7, 'hallucination': 10, 'field_quality': 7, 'structure': 8}
+   Strengths: ['Good structure of experience and education sections', 'No hallucination of information']
+   Weaknesses: ['Missing full name', 'Inconsistent date formatting (e.g., missing start date for education)']
+
+Judging: 20882041.pdf
+STREAM TEXT: Overall  : 8.6/10
+   Scores   : {'completeness': 9, 'accuracy': 8, 'hallucination': 10, 'field_quality': 7, 'structure': 9}
+   Strengths: ['Good structure of experience section with clear bullet points.', 'No hallucination of information.', 'Successfully extracted experience history and education.']
+   Weaknesses: ['Missing full name.', 'Skills list contains redundant and generic terms.', "Location data is incomplete (just 'City, State')."]
+   Errors: ['Missing name']
+
+Judging: 15858254.pdf
+STREAM TEXT: Overall  : 8.4/10
+   Scores   : {'completeness': 9, 'accuracy': 8, 'hallucination': 10, 'field_quality': 7, 'structure': 8}
+   Strengths: ['Successfully extracted most key sections (experience, education, skills).', 'No hallucination detected - all information is present in the source document.']
+   Weaknesses: ['Missing full name and contact information.', 'Skills list is a bit noisy and contains redundant entries.', 'Experience description bullets are very long and could be better segmented.']
+
+Judging: 12518008.pdf
+STREAM TEXT: Overall  : 8.4/10
+   Scores   : {'completeness': 9, 'accuracy': 8, 'hallucination': 10, 'field_quality': 7, 'structure': 8}
+   Strengths: ['Good extraction of experience details including dates and descriptions', 'No hallucination detected', 'Successfully extracted certifications and education']
+   Weaknesses: ['Skills list is noisy and contains redundant entries', 'Contact information is missing', 'Company names are not consistently extracted for all experience entries']
+
+Judging: 25608963.pdf
+STREAM TEXT: Overall  : 8.0/10
+   Scores   : {'completeness': 8, 'accuracy': 7, 'hallucination': 10, 'field_quality': 7, 'structure': 8}
+   Strengths: ['Good extraction of experience details', 'No hallucination detected', 'Well-structured JSON format']
+   Weaknesses: ['Missing full name and contact information', 'Skills list could be more refined and categorized', 'Some description bullets are very long and unformatted']
+STREAM TEXT: ======================================================================
+LLM-AS-JUDGE FINAL REPORT
+======================================================================
+        file  overall  completeness  accuracy  hallucination  field_quality  structure
+10985403.pdf    8.600             9         8             10              8          8
+17488801.pdf    8.000             8         7             10              7          8
+14049846.pdf    7.400             8         7              9              7          6
+12472574.pdf    7.600             8         7              9              6          8
+21807224.pdf    8.200             8         8             10              7          8
+27040860.pdf    8.000             8         7             10              7          8
+20882041.pdf    8.600             9         8             10              7          9
+15858254.pdf    8.400             9         8             10              7          8
+12518008.pdf    8.400             9         8             10              7          8
+25608963.pdf    8.000             8         7             10              7          8
+EXTRACTED IMAGE: eval_resume_extraction_eval_2.png
+EXTRACTED IMAGE: eval_resume_extraction_eval_3.png
+MARKDOWN: ## 13. Final Combined Report
+STREAM TEXT: ======================================================================
+FINAL SUMMARY
+======================================================================
+
+Hardcoded Test Cases (10 total, 10 successful):
+   Mean overall score   : 0.8978
+   Mean skills F1       : 0.4257
+   Mean prog_lang F1    : 1.0000
+   Mean exp title recall: 1.0000
+   Mean edu recall      : 1.0000
+
+   Breakdown by role:
+     backend-engineer        overall=0.896  n=3
+     data-scientist          overall=0.881  n=2
+     frontend-engineer       overall=0.885  n=2
+     ml-engineer             overall=0.919  n=3
+
+LLM-as-Judge (10 PDFs evaluated):
+   Mean overall score   : 8.1/10
+   Mean completeness      : 8.4/10
+   Mean accuracy          : 7.5/10
+   Mean hallucination     : 9.8/10
+   Mean field_quality     : 7.0/10
+   Mean structure         : 7.9/10
+
+======================================================================
+Evaluation notebook complete.
