@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
@@ -362,8 +362,12 @@ async def select_resume(resume_id: str, user_id: str = Depends(get_current_user_
     if not resp.data:
         raise HTTPException(status_code=404, detail="Resume not found")
         
-    # Update created_at to now() to make it the latest resume
-    db_client.table("resumes").update({"created_at": "now()"}).eq("id", resume_id).execute()
+    # Bump created_at so this resume sorts as the latest (gap/jobs/github all
+    # read the most-recent resume). The literal string "now()" is NOT a valid
+    # timestamp via PostgREST — send a real ISO-8601 UTC timestamp instead.
+    db_client.table("resumes").update(
+        {"created_at": datetime.now(timezone.utc).isoformat()}
+    ).eq("id", resume_id).execute()
     
     return {"success": True, "resume_id": resume_id}
 
