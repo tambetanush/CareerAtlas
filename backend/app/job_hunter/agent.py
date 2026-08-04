@@ -1,6 +1,7 @@
 import json
+import logging
 import re
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 import requests
@@ -12,7 +13,9 @@ from app.job_hunter.schemas import (
     JobSearchResponse,
     ScoreBreakdown,
 )
-from app.utils.llm_factory import get_gemini_model
+from app.utils.llm_factory import invoke_gemini
+
+logger = logging.getLogger(__name__)
 
 INDIA_CITY_ALIASES = {
     "pune": {"pune", "poona"},
@@ -49,7 +52,8 @@ def safe_json_parse(text: str):
             return json.loads(parsed)
         if isinstance(parsed, dict):
             return [parsed]
-    except Exception:
+    except (json.JSONDecodeError, TypeError) as e:
+        logger.debug("safe_json_parse could not decode LLM output: %s", e)
         return []
     return []
 
@@ -102,8 +106,11 @@ def fetch_jobs(query_role: str, where: str, results: int = 20) -> list[dict[str,
 
 
 def _search_url(query_role: str, location: str) -> str:
-    q = f"{query_role} jobs {location}".strip()
-    return "https://www.google.com/search?q=" + requests.utils.quote(q)
+    # Used only by fallback listings. LinkedIn's job search lands on real
+    # postings, unlike a raw Google search results page.
+    kw = requests.utils.quote(query_role.strip())
+    loc = requests.utils.quote(location.strip())
+    return f"https://www.linkedin.com/jobs/search/?keywords={kw}&location={loc}"
 
 
 def _fallback_jobs(query_role: str, user_location_pref: str, count: int = 5) -> list[dict[str, Any]]:
@@ -142,12 +149,15 @@ def _fetch_jobs_with_fallback(query_role: str, user_location_pref: str, results:
         f"senior {query_role}",
         f"{query_role} engineer",
     ]
-    where = query_role if user_location_pref.lower().strip() not in {"remote", "hybrid"} else ""
+    # Adzuna's `where` is a LOCATION, not the role. Passing the job title here
+    # made every search return nothing and silently fall back to Google links.
+    where = user_location_pref if user_location_pref.lower().strip() not in {"remote", "hybrid"} else ""
 
     for variant in search_variants:
         try:
             jobs = fetch_jobs(variant, where, results=results)
         except Exception:
+            logger.warning("Adzuna fetch failed for variant %r", variant, exc_info=True)
             jobs = []
         if not jobs:
             continue
@@ -235,6 +245,7 @@ def score_jobs(resume: dict[str, Any], jobs: list[dict[str, Any]]):
         r_emb = embeds[0]
         j_embs = embeds[1:]
     except Exception:
+        logger.warning("Jina embedding failed; falling back to heuristic scoring", exc_info=True)
         r_emb = None
         j_embs = None
     results = []
@@ -342,8 +353,7 @@ For each job return:
 
 
 def gemini_generate_json(prompt: str) -> str:
-    model = get_gemini_model(temperature=0.1)
-    response = model.invoke(prompt)
+    response = invoke_gemini(prompt, temperature=0.1)
     content = getattr(response, "content", "")
     if isinstance(content, str):
         return content
@@ -447,6 +457,7 @@ def job_finder_agent(
             if isinstance(e, dict) and e.get("job_id")
         }
     except Exception:
+        logger.warning("LLM job explanations failed; using heuristic fallback", exc_info=True)
         explanations = {}
     if not explanations:
         explanations = _fallback_explanations(resume, scored)

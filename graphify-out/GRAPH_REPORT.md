@@ -1,12 +1,12 @@
-# Graph Report - Career-Atlas  (2026-05-20)
+# Graph Report - Career-Atlas  (2026-07-17)
 
 ## Corpus Check
-- 122 files · ~46,462 words
+- 151 files · ~200,836 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 431 nodes · 527 edges · 24 communities detected
-- Extraction: 75% EXTRACTED · 25% INFERRED · 0% AMBIGUOUS · INFERRED: 131 edges (avg confidence: 0.66)
+- 789 nodes · 1159 edges · 65 communities detected
+- Extraction: 63% EXTRACTED · 37% INFERRED · 0% AMBIGUOUS · INFERRED: 427 edges (avg confidence: 0.65)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -22,42 +22,83 @@
 - [[_COMMUNITY_Community 9|Community 9]]
 - [[_COMMUNITY_Community 10|Community 10]]
 - [[_COMMUNITY_Community 11|Community 11]]
-- [[_COMMUNITY_Community 18|Community 18]]
-- [[_COMMUNITY_Community 22|Community 22]]
-- [[_COMMUNITY_Community 100|Community 100]]
-- [[_COMMUNITY_Community 101|Community 101]]
-- [[_COMMUNITY_Community 102|Community 102]]
-- [[_COMMUNITY_Community 103|Community 103]]
-- [[_COMMUNITY_Community 104|Community 104]]
-- [[_COMMUNITY_Community 105|Community 105]]
-- [[_COMMUNITY_Community 106|Community 106]]
-- [[_COMMUNITY_Community 107|Community 107]]
-- [[_COMMUNITY_Community 108|Community 108]]
-- [[_COMMUNITY_Community 109|Community 109]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 116|Community 116]]
+- [[_COMMUNITY_Community 117|Community 117]]
+- [[_COMMUNITY_Community 118|Community 118]]
+- [[_COMMUNITY_Community 119|Community 119]]
+- [[_COMMUNITY_Community 120|Community 120]]
+- [[_COMMUNITY_Community 121|Community 121]]
+- [[_COMMUNITY_Community 122|Community 122]]
+- [[_COMMUNITY_Community 123|Community 123]]
+- [[_COMMUNITY_Community 124|Community 124]]
+- [[_COMMUNITY_Community 125|Community 125]]
+- [[_COMMUNITY_Community 126|Community 126]]
+- [[_COMMUNITY_Community 127|Community 127]]
+- [[_COMMUNITY_Community 128|Community 128]]
+- [[_COMMUNITY_Community 129|Community 129]]
+- [[_COMMUNITY_Community 130|Community 130]]
+- [[_COMMUNITY_Community 131|Community 131]]
+- [[_COMMUNITY_Community 132|Community 132]]
+- [[_COMMUNITY_Community 133|Community 133]]
+- [[_COMMUNITY_Community 134|Community 134]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 136|Community 136]]
+- [[_COMMUNITY_Community 137|Community 137]]
+- [[_COMMUNITY_Community 138|Community 138]]
+- [[_COMMUNITY_Community 139|Community 139]]
+- [[_COMMUNITY_Community 140|Community 140]]
+- [[_COMMUNITY_Community 141|Community 141]]
+- [[_COMMUNITY_Community 142|Community 142]]
+- [[_COMMUNITY_Community 143|Community 143]]
+- [[_COMMUNITY_Community 144|Community 144]]
+- [[_COMMUNITY_Community 145|Community 145]]
+- [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 147|Community 147]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 149|Community 149]]
+- [[_COMMUNITY_Community 150|Community 150]]
+- [[_COMMUNITY_Community 151|Community 151]]
+- [[_COMMUNITY_Community 152|Community 152]]
+- [[_COMMUNITY_Community 153|Community 153]]
+- [[_COMMUNITY_Community 154|Community 154]]
+- [[_COMMUNITY_Community 155|Community 155]]
+- [[_COMMUNITY_Community 156|Community 156]]
+- [[_COMMUNITY_Community 157|Community 157]]
+- [[_COMMUNITY_Community 158|Community 158]]
+- [[_COMMUNITY_Community 159|Community 159]]
+- [[_COMMUNITY_Community 160|Community 160]]
+- [[_COMMUNITY_Community 161|Community 161]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Gap Analysis Agent — API Router.  POST /api/analyze-gaps/   - Fetches user sk` - 14 edges
-2. `ValidationResult` - 14 edges
-3. `Pathway` - 12 edges
-4. `request()` - 11 edges
-5. `deep_research()` - 9 edges
-6. `ScrapedJobsResponse` - 9 edges
-7. `get_groq_model()` - 9 edges
-8. `useAuth()` - 9 edges
-9. `JudgeVerdict` - 8 edges
-10. `hybrid_retrieve()` - 8 edges
+1. `ResumeExtraction` - 30 edges
+2. `ValidationResult` - 22 edges
+3. `Pathway` - 19 edges
+4. `request()` - 17 edges
+5. `Gap Analysis Agent — API Router.  POST /api/analyze-gaps/   - Fetches user sk` - 14 edges
+6. `JobResult` - 14 edges
+7. `GapIn` - 13 edges
+8. `JudgeVerdict` - 13 edges
+9. `GitHubOAuthCallback` - 13 edges
+10. `RepoSelection` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `CareerAtlas Platform` --references--> `CareerAtlas Proposal (Documentation)`  [INFERRED]
   README.md → Documentation/CareerAtlas_Proposal.pdf
 - `node_validate()` --calls--> `validate_pathway()`  [INFERRED]
   backend\app\deep_researcher\agent.py → backend\app\deep_researcher\validation.py
-- `Resume Extraction Service` --references--> `SkillGraph: Resume Extraction and RAG Pipeline (Documentation)`  [INFERRED]
-  README.md → Documentation/SkillGraph_ Resume Extraction and RAG Pipeline.pdf
-- `Gap Analysis Service` --conceptually_related_to--> `SkillGraph: Resume Extraction and RAG Pipeline (Documentation)`  [INFERRED]
-  README.md → Documentation/SkillGraph_ Resume Extraction and RAG Pipeline.pdf
-- `Job Hunter Service (Deep Research Agent)` --references--> `Deep Researcher Agentic System (Documentation)`  [INFERRED]
-  README.md → Documentation/Deep Researcher Agentic System.pdf
+- `_build_job_result()` --calls--> `test_build_job_result_maps_scores_and_explanation()`  [INFERRED]
+  backend\app\job_hunter\agent.py → backend\tests\test_job_hunter_agent.py
+- `JobResult` --uses--> `Unit tests for app.job_hunter.agent (pure scoring / parsing logic).`  [INFERRED]
+  backend\app\job_hunter\schemas.py → backend\tests\test_job_hunter_agent.py
+- `ResumeExtraction` --uses--> `Unit tests for app.resume_extraction.service (pure normalization / parsing).`  [INFERRED]
+  backend\app\resume_extraction\schemas.py → backend\tests\test_resume_extraction_service.py
 
 ## Hyperedges (group relationships)
 - **Core AI Processing Pipeline** — readme_resume_extraction, readme_gap_analysis, readme_roadmap_generation [EXTRACTED 0.90]
@@ -67,143 +108,379 @@
 ## Communities
 
 ### Community 0 - "Community 0"
-Cohesion: 0.09
-Nodes (41): Deep Researcher Agent — LangGraph topology.    plan -> search -> [critic router], BaseModel, Deep Researcher — LLM-as-judge evaluation.  Scores a generated Pathway against a, Run the rubric judge over a pathway. Returns a structured verdict., Gap Analysis Agent — API Router.  POST /api/analyze-gaps/   - Fetches user sk, All of the user's resume ids, newest first., Most recent gap analysis for this role across all the user's resumes.      skill, update_milestone_status() (+33 more)
+Cohesion: 0.07
+Nodes (62): node_judge(), Deep Researcher Agent — LangGraph topology.    plan -> search -> [critic router], BaseModel, evaluate_pathway(), _gaps_text(), Deep Researcher — LLM-as-judge evaluation.  Scores a generated Pathway against a, Run the rubric judge over a pathway. Returns a structured verdict., Run the rubric judge over a pathway. Returns a structured verdict. (+54 more)
 
 ### Community 1 - "Community 1"
+Cohesion: 0.06
+Nodes (62): _backfill_skills(), build_extraction_prompt(), build_repair_prompt(), build_url_manifest(), classify_url(), _dedupe_strings(), _enforce_post_processing(), extract_embedded_urls() (+54 more)
+
+### Community 2 - "Community 2"
+Cohesion: 0.05
+Nodes (50): latest_resume_id(), Shared resume-lookup helpers.  Several routers need "the user's resumes, newes, All of the user's resume ids, newest first. Strictly scoped to user_id., The user's most recent resume id, or None if they have none., user_resume_ids(), add_skill(), _delete_other_resumes(), delete_skill() (+42 more)
+
+### Community 3 - "Community 3"
+Cohesion: 0.08
+Nodes (46): build_bulk_explanation_prompt(), build_compact_resume_for_llm(), build_resume_representation(), cosine_sim(), embed_batch(), _fallback_explanations(), _fallback_jobs(), fetch_jobs() (+38 more)
+
+### Community 4 - "Community 4"
+Cohesion: 0.07
+Nodes (36): Converts a display title like "Machine Learning Engineer"     into its Pinecone, resolve_role_slug(), analyze_gaps(), deep_research(), _extract_sources(), get_saved_gaps(), latest_pathway(), _load_gaps() (+28 more)
+
+### Community 5 - "Community 5"
+Cohesion: 0.09
+Nodes (29): addSkill(), analyzeGaps(), ApiError, authHeaders(), cacheJobSearchResponse(), deleteSkill(), getAllResumes(), getCachedJobSearchResponse() (+21 more)
+
+### Community 6 - "Community 6"
+Cohesion: 0.1
+Nodes (33): fetch_authenticated_login(), fetch_commit_stats(), fetch_file_content(), fetch_github_graphql(), fetch_languages(), fetch_repo_file_tree(), The viewer's login — needed to filter commits to owner-authored only., GET /languages -> bytes per language, returned as rounded percentages. (+25 more)
+
+### Community 7 - "Community 7"
+Cohesion: 0.09
+Nodes (13): AppLayout(), useAuth(), useAllResumes(), useEducation(), useEnabled(), useExperience(), useGapAnalysis(), useJobMatches() (+5 more)
+
+### Community 8 - "Community 8"
 Cohesion: 0.09
 Nodes (34): CareerAtlas Proposal (Documentation), Deep Researcher Agentic System (Documentation), SkillGraph: Resume Extraction and RAG Pipeline (Documentation), Backend (Python FastAPI + uv), CareerAtlas Platform, Decoupled Architecture Design, Environment Variables Configuration, Frontend (Vite + React + Bun) (+26 more)
 
-### Community 2 - "Community 2"
-Cohesion: 0.09
-Nodes (24): AIService, Retrieves embeddings using Google Gemini Embedding 2 (text-embedding-004)., Reranks documents using Jina Reranker v3 (higher accuracy)., _build_bm25_corpus(), hybrid_retrieve(), Hybrid Retrieval Module for Gap Analysis Agent.  Implements the "Hybrid Retrie, Full hybrid retrieval pipeline:       1. Semantic search in Pinecone with role, Converts a display title like "Machine Learning Engineer"     into its Pinecone (+16 more)
-
-### Community 3 - "Community 3"
-Cohesion: 0.09
-Nodes (21): execute_search(), extract_and_score_jobs(), generate_search_queries(), JobSearchState, node_search(), Generates optimal search queries to find job listings., Builds targeted job-board search queries for the role + location., Executes search using Tavily. (+13 more)
-
-### Community 4 - "Community 4"
-Cohesion: 0.09
-Nodes (22): get_gemini_model(), get_huggingface_model(), get_openrouter_model(), Returns a configured Gemini model instance. Best for complex reasoning and large, Returns a ChatOpenAI instance pointed at OpenRouter.     Any model slug from op, Returns a configured HuggingFace model instance. Good for auxiliary subtasks., analyze_gaps(), AnalyzeGapsRequest (+14 more)
-
-### Community 5 - "Community 5"
-Cohesion: 0.13
-Nodes (12): AppLayout(), useAuth(), useEducation(), useEnabled(), useExperience(), useGapAnalysis(), useJobMatches(), useLatestResume() (+4 more)
-
-### Community 6 - "Community 6"
-Cohesion: 0.21
-Nodes (18): build_extraction_prompt(), build_repair_prompt(), build_url_manifest(), classify_url(), _enforce_post_processing(), extract_embedded_urls(), extract_pdf_text(), extract_structured_resume_data() (+10 more)
-
-### Community 7 - "Community 7"
-Cohesion: 0.16
-Nodes (13): analyzeGaps(), ApiError, authHeaders(), getJobMatches(), getLatestPathway(), getLatestResume(), listMilestones(), request() (+5 more)
-
-### Community 8 - "Community 8"
-Cohesion: 0.18
-Nodes (13): critic_route(), _gaps_brief(), _gaps_detailed(), node_judge(), node_plan(), node_structure(), node_validate(), _notes_brief() (+5 more)
-
 ### Community 9 - "Community 9"
-Cohesion: 0.33
-Nodes (9): _delete_other_resumes(), fetch_full_resume(), get_latest_resume(), insert_full_resume(), _insert_resume_row(), _latest_resume_id(), parse_resume(), Replace-on-upload: keep one resume per user.      All child tables (skills, ex (+1 more)
+Cohesion: 0.09
+Nodes (23): AIService, Retrieves embeddings using Google Gemini Embedding 2 (text-embedding-004)., Reranks documents using Jina Reranker v3 (higher accuracy)., _build_bm25_corpus(), hybrid_retrieve(), Hybrid Retrieval Module for Gap Analysis Agent.  Implements the "Hybrid Retrie, Full hybrid retrieval pipeline:       1. Semantic search in Pinecone with role, Builds a BM25 index from Pinecone taxonomy metadata for a specific role. (+15 more)
 
 ### Community 10 - "Community 10"
+Cohesion: 0.15
+Nodes (29): _build_job_result(), Generates optimal search queries to find job listings., Builds targeted job-board search queries for the role + location., Executes search using Tavily., Runs every planned query through Tavily and aggregates the results., Uses LLM to parse raw search results into JobMatchSchema structures., Uses LLM to parse raw search results into JobMatchSchema structures., _insert_job_match() (+21 more)
+
+### Community 11 - "Community 11"
+Cohesion: 0.1
+Nodes (24): critic_route(), _gaps_brief(), _gaps_detailed(), node_plan(), node_structure(), node_validate(), _notes_brief(), ainvoke_gemini() (+16 more)
+
+### Community 12 - "Community 12"
+Cohesion: 0.24
+Nodes (18): confirm_github_skills(), get_github_insights(), Powers the insights panel: stored profile + per-repo facts + quarantined     sk, Powers the insights panel: stored profile + per-repo facts + quarantined     sk, Powers the insights panel: stored profile + per-repo facts + quarantined     sk, Promote suggested skills into the verified profile (confirmed=true). Gap     an, The user's most recent resume id, or None if they have none.      Strictly sco, Promote suggested skills into the verified profile (confirmed=true). Gap     an (+10 more)
+
+### Community 13 - "Community 13"
+Cohesion: 0.2
+Nodes (8): node_search(), Shared Tavily web-search helper.  Wraps `langchain_tavily.TavilySearch` (the mai, Run a Tavily search and return a normalized list:         [{url, title, content, tavily_search(), Job Hunter — web search (recency-filtered Tavily)., Run a recency-filtered job search; returns normalized result dicts., Run a recency-filtered web search; returns normalized result dicts., search_web()
+
+### Community 14 - "Community 14"
+Cohesion: 0.28
+Nodes (7): BaseSettings, _get_google_api_keys(), Settings, Unit tests for app.config Google API key discovery., test_get_google_api_keys_collects_main_and_numbered(), test_get_google_api_keys_dedupes_and_strips(), test_get_google_api_keys_empty_when_unset()
+
+### Community 15 - "Community 15"
 Cohesion: 0.32
 Nodes (6): _decode(), _get_jwks(), Auth dependency — verifies Supabase user JWTs.  The Supabase project signs token, Decode + verify a token against a JWKS dict; return the user id (sub)., Validate the Supabase JWT from the Authorization header.      Returns the user U, verify_token()
 
-### Community 11 - "Community 11"
-Cohesion: 0.33
-Nodes (6): list_job_matches(), _posted_days_to_int(), Coerce the LLM's free-text 'posted' value into a day count for the int column., Return the current user's persisted job matches (latest search)., research_jobs(), ResearchJobsRequest
+### Community 16 - "Community 16"
+Cohesion: 0.38
+Nodes (5): http_exception_handler(), _is_rate_limit(), Intentionally errors — used to verify Sentry capture end-to-end.      Disabled, sentry_debug(), unhandled_exception_handler()
 
-### Community 18 - "Community 18"
-Cohesion: 0.67
-Nodes (2): BaseSettings, Settings
+### Community 20 - "Community 20"
+Cohesion: 0.5
+Nodes (2): asStringList(), normalizeProject()
 
-### Community 22 - "Community 22"
+### Community 29 - "Community 29"
 Cohesion: 1.0
 Nodes (1): Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro
 
-### Community 100 - "Community 100"
+### Community 116 - "Community 116"
 Cohesion: 1.0
-Nodes (1): Validates the JWT token coming from the frontend (which signed in via InsForge).
+Nodes (1): Intentionally errors — used to verify Sentry capture end-to-end.      Disabled
 
-### Community 101 - "Community 101"
+### Community 117 - "Community 117"
 Cohesion: 1.0
-Nodes (1): Converts a display title like "Machine Learning Engineer"     into its Pinecone
+Nodes (1): Run a Tavily search and return a normalized list:         [{url, title, content,
 
-### Community 102 - "Community 102"
+### Community 118 - "Community 118"
 Cohesion: 1.0
-Nodes (1): Builds a BM25 index from Pinecone taxonomy metadata for a specific role.
+Nodes (1): Intentionally errors — used to verify Sentry capture end-to-end.
 
-### Community 103 - "Community 103"
+### Community 119 - "Community 119"
 Cohesion: 1.0
-Nodes (1): Full hybrid retrieval pipeline:       1. Semantic search in Pinecone with role
+Nodes (1): Like `get_current_user_id`, but rejects unauthenticated requests.      Routes
 
-### Community 104 - "Community 104"
+### Community 120 - "Community 120"
 Cohesion: 1.0
-Nodes (1): Returns a configured Tavily search tool for LangGraph agent.
+Nodes (1): Intentionally errors — used to verify Sentry capture end-to-end.
 
-### Community 105 - "Community 105"
-Cohesion: 1.0
-Nodes (1): Returns a configured Gemini model instance. Best for complex reasoning and large
-
-### Community 106 - "Community 106"
-Cohesion: 1.0
-Nodes (1): Returns a configured Groq model instance. Best for fast, responsive generation.
-
-### Community 107 - "Community 107"
+### Community 121 - "Community 121"
 Cohesion: 1.0
 Nodes (1): Returns a configured HuggingFace model instance. Good for auxiliary subtasks.
 
-### Community 108 - "Community 108"
+### Community 122 - "Community 122"
+Cohesion: 1.0
+Nodes (1): Guarantee taxonomy rows exist for this role.      Returns the taxonomy source:
+
+### Community 123 - "Community 123"
+Cohesion: 1.0
+Nodes (1): Returns a configured Groq model instance. Best for fast, responsive generation.
+
+### Community 124 - "Community 124"
+Cohesion: 1.0
+Nodes (1): Returns a configured HuggingFace model instance. Good for auxiliary subtasks.
+
+### Community 125 - "Community 125"
+Cohesion: 1.0
+Nodes (1): Replace-on-upload: keep one resume per user.      All child tables (skills, ex
+
+### Community 126 - "Community 126"
+Cohesion: 1.0
+Nodes (1): The user's most recent resume id, or None if they have none.      Strictly sco
+
+### Community 127 - "Community 127"
+Cohesion: 1.0
+Nodes (1): Change the user's target role (persisted in the `profiles` table).
+
+### Community 128 - "Community 128"
+Cohesion: 1.0
+Nodes (1): Add a skill to the user's latest resume.
+
+### Community 129 - "Community 129"
+Cohesion: 1.0
+Nodes (1): Remove a skill (by name) from the user's latest resume.
+
+### Community 130 - "Community 130"
+Cohesion: 1.0
+Nodes (1): Returns a configured Gemini model instance. Best for complex reasoning and large
+
+### Community 131 - "Community 131"
+Cohesion: 1.0
+Nodes (1): Returns a configured Groq model instance. Best for fast, responsive generation.
+
+### Community 132 - "Community 132"
+Cohesion: 1.0
+Nodes (1): Returns a ChatOpenAI instance pointed at OpenRouter.     Any model slug from op
+
+### Community 133 - "Community 133"
+Cohesion: 1.0
+Nodes (1): Returns a configured HuggingFace model instance. Good for auxiliary subtasks.
+
+### Community 134 - "Community 134"
+Cohesion: 1.0
+Nodes (1): Upload a resume file to the private bucket; return its object path.
+
+### Community 135 - "Community 135"
+Cohesion: 1.0
+Nodes (1): Download a resume file by its storage object path.
+
+### Community 136 - "Community 136"
+Cohesion: 1.0
+Nodes (1): Intentionally errors — used to verify Sentry capture end-to-end.
+
+### Community 137 - "Community 137"
+Cohesion: 1.0
+Nodes (1): LLM structured output schema.
+
+### Community 138 - "Community 138"
+Cohesion: 1.0
+Nodes (1): Full API response returned to the frontend.
+
+### Community 139 - "Community 139"
+Cohesion: 1.0
+Nodes (1): Replace-on-upload: keep one resume per user.      All child tables (skills, ex
+
+### Community 140 - "Community 140"
+Cohesion: 1.0
+Nodes (1): Change the user's target role (persisted in the `profiles` table).
+
+### Community 141 - "Community 141"
+Cohesion: 1.0
+Nodes (1): Add a skill to the user's latest resume.
+
+### Community 142 - "Community 142"
+Cohesion: 1.0
+Nodes (1): Remove a skill (by name) from the user's latest resume.
+
+### Community 143 - "Community 143"
+Cohesion: 1.0
+Nodes (1): Edit an experience entry's title / company / dates.
+
+### Community 144 - "Community 144"
+Cohesion: 1.0
+Nodes (1): LLM structured output schema.
+
+### Community 145 - "Community 145"
+Cohesion: 1.0
+Nodes (1): Full API response returned to the frontend.
+
+### Community 146 - "Community 146"
+Cohesion: 1.0
+Nodes (1): Coerce the LLM's free-text 'posted' value into a day count for the int column.
+
+### Community 147 - "Community 147"
+Cohesion: 1.0
+Nodes (1): Return the current user's persisted job matches (latest search).
+
+### Community 148 - "Community 148"
+Cohesion: 1.0
+Nodes (1): Replace-on-upload: keep one resume per user.      All child tables (skills, ex
+
+### Community 149 - "Community 149"
+Cohesion: 1.0
+Nodes (1): Returns a configured Groq model instance. Best for fast, responsive generation.
+
+### Community 150 - "Community 150"
+Cohesion: 1.0
+Nodes (1): Returns a ChatOpenAI instance pointed at OpenRouter.     Any model slug from op
+
+### Community 151 - "Community 151"
+Cohesion: 1.0
+Nodes (1): Returns a configured HuggingFace model instance. Good for auxiliary subtasks.
+
+### Community 152 - "Community 152"
+Cohesion: 1.0
+Nodes (1): Validates the JWT token coming from the frontend (which signed in via InsForge).
+
+### Community 153 - "Community 153"
+Cohesion: 1.0
+Nodes (1): Converts a display title like "Machine Learning Engineer"     into its Pinecone
+
+### Community 154 - "Community 154"
+Cohesion: 1.0
+Nodes (1): Builds a BM25 index from Pinecone taxonomy metadata for a specific role.
+
+### Community 155 - "Community 155"
+Cohesion: 1.0
+Nodes (1): Full hybrid retrieval pipeline:       1. Semantic search in Pinecone with role
+
+### Community 156 - "Community 156"
+Cohesion: 1.0
+Nodes (1): Returns a configured Tavily search tool for LangGraph agent.
+
+### Community 157 - "Community 157"
+Cohesion: 1.0
+Nodes (1): Returns a configured Gemini model instance. Best for complex reasoning and large
+
+### Community 158 - "Community 158"
+Cohesion: 1.0
+Nodes (1): Returns a configured Groq model instance. Best for fast, responsive generation.
+
+### Community 159 - "Community 159"
+Cohesion: 1.0
+Nodes (1): Returns a configured HuggingFace model instance. Good for auxiliary subtasks.
+
+### Community 160 - "Community 160"
 Cohesion: 1.0
 Nodes (1): Saves bytes to a temporary file and extracts clean markdown using pymupdf4llm.
 
-### Community 109 - "Community 109"
+### Community 161 - "Community 161"
 Cohesion: 1.0
 Nodes (1): Feeds markdown to Gemini with strict structured output.
 
 ## Knowledge Gaps
-- **47 isolated node(s):** `Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro`, `Run a recency-filtered web search; returns normalized result dicts.`, `Auth dependency — verifies Supabase user JWTs.  The Supabase project signs token`, `Decode + verify a token against a JWKS dict; return the user id (sub).`, `Validate the Supabase JWT from the Authorization header.      Returns the user U` (+42 more)
+- **117 isolated node(s):** `Intentionally errors — used to verify Sentry capture end-to-end.      Disabled`, `Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro`, `Run a recency-filtered web search; returns normalized result dicts.`, `Auth dependency — verifies Supabase user JWTs.  The Supabase project signs token`, `Decode + verify a token against a JWKS dict; return the user id (sub).` (+112 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 18`** (3 nodes): `config.py`, `BaseSettings`, `Settings`
+- **Thin community `Community 20`** (5 nodes): `asStringList()`, `handleAddSkill()`, `handleRemoveSkill()`, `normalizeProject()`, `_app.profile.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 22`** (2 nodes): `prompts.py`, `Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro`
+- **Thin community `Community 29`** (2 nodes): `prompts.py`, `Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 100`** (1 nodes): `Validates the JWT token coming from the frontend (which signed in via InsForge).`
+- **Thin community `Community 116`** (1 nodes): `Intentionally errors — used to verify Sentry capture end-to-end.      Disabled`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 101`** (1 nodes): `Converts a display title like "Machine Learning Engineer"     into its Pinecone`
+- **Thin community `Community 117`** (1 nodes): `Run a Tavily search and return a normalized list:         [{url, title, content,`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 102`** (1 nodes): `Builds a BM25 index from Pinecone taxonomy metadata for a specific role.`
+- **Thin community `Community 118`** (1 nodes): `Intentionally errors — used to verify Sentry capture end-to-end.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 103`** (1 nodes): `Full hybrid retrieval pipeline:       1. Semantic search in Pinecone with role`
+- **Thin community `Community 119`** (1 nodes): `Like `get_current_user_id`, but rejects unauthenticated requests.      Routes`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 104`** (1 nodes): `Returns a configured Tavily search tool for LangGraph agent.`
+- **Thin community `Community 120`** (1 nodes): `Intentionally errors — used to verify Sentry capture end-to-end.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 105`** (1 nodes): `Returns a configured Gemini model instance. Best for complex reasoning and large`
+- **Thin community `Community 121`** (1 nodes): `Returns a configured HuggingFace model instance. Good for auxiliary subtasks.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 106`** (1 nodes): `Returns a configured Groq model instance. Best for fast, responsive generation.`
+- **Thin community `Community 122`** (1 nodes): `Guarantee taxonomy rows exist for this role.      Returns the taxonomy source:`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 107`** (1 nodes): `Returns a configured HuggingFace model instance. Good for auxiliary subtasks.`
+- **Thin community `Community 123`** (1 nodes): `Returns a configured Groq model instance. Best for fast, responsive generation.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 108`** (1 nodes): `Saves bytes to a temporary file and extracts clean markdown using pymupdf4llm.`
+- **Thin community `Community 124`** (1 nodes): `Returns a configured HuggingFace model instance. Good for auxiliary subtasks.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 109`** (1 nodes): `Feeds markdown to Gemini with strict structured output.`
+- **Thin community `Community 125`** (1 nodes): `Replace-on-upload: keep one resume per user.      All child tables (skills, ex`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 126`** (1 nodes): `The user's most recent resume id, or None if they have none.      Strictly sco`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 127`** (1 nodes): `Change the user's target role (persisted in the `profiles` table).`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 128`** (1 nodes): `Add a skill to the user's latest resume.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 129`** (1 nodes): `Remove a skill (by name) from the user's latest resume.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 130`** (1 nodes): `Returns a configured Gemini model instance. Best for complex reasoning and large`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 131`** (1 nodes): `Returns a configured Groq model instance. Best for fast, responsive generation.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 132`** (1 nodes): `Returns a ChatOpenAI instance pointed at OpenRouter.     Any model slug from op`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 133`** (1 nodes): `Returns a configured HuggingFace model instance. Good for auxiliary subtasks.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 134`** (1 nodes): `Upload a resume file to the private bucket; return its object path.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 135`** (1 nodes): `Download a resume file by its storage object path.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 136`** (1 nodes): `Intentionally errors — used to verify Sentry capture end-to-end.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 137`** (1 nodes): `LLM structured output schema.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 138`** (1 nodes): `Full API response returned to the frontend.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 139`** (1 nodes): `Replace-on-upload: keep one resume per user.      All child tables (skills, ex`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 140`** (1 nodes): `Change the user's target role (persisted in the `profiles` table).`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 141`** (1 nodes): `Add a skill to the user's latest resume.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 142`** (1 nodes): `Remove a skill (by name) from the user's latest resume.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 143`** (1 nodes): `Edit an experience entry's title / company / dates.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 144`** (1 nodes): `LLM structured output schema.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 145`** (1 nodes): `Full API response returned to the frontend.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 146`** (1 nodes): `Coerce the LLM's free-text 'posted' value into a day count for the int column.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 147`** (1 nodes): `Return the current user's persisted job matches (latest search).`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 148`** (1 nodes): `Replace-on-upload: keep one resume per user.      All child tables (skills, ex`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 149`** (1 nodes): `Returns a configured Groq model instance. Best for fast, responsive generation.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 150`** (1 nodes): `Returns a ChatOpenAI instance pointed at OpenRouter.     Any model slug from op`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 151`** (1 nodes): `Returns a configured HuggingFace model instance. Good for auxiliary subtasks.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 152`** (1 nodes): `Validates the JWT token coming from the frontend (which signed in via InsForge).`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 153`** (1 nodes): `Converts a display title like "Machine Learning Engineer"     into its Pinecone`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 154`** (1 nodes): `Builds a BM25 index from Pinecone taxonomy metadata for a specific role.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 155`** (1 nodes): `Full hybrid retrieval pipeline:       1. Semantic search in Pinecone with role`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 156`** (1 nodes): `Returns a configured Tavily search tool for LangGraph agent.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 157`** (1 nodes): `Returns a configured Gemini model instance. Best for complex reasoning and large`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 158`** (1 nodes): `Returns a configured Groq model instance. Best for fast, responsive generation.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 159`** (1 nodes): `Returns a configured HuggingFace model instance. Good for auxiliary subtasks.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 160`** (1 nodes): `Saves bytes to a temporary file and extracts clean markdown using pymupdf4llm.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 161`** (1 nodes): `Feeds markdown to Gemini with strict structured output.`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `generate_gaps_for_user()` connect `Community 4` to `Community 8`, `Community 2`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
-- **Why does `get_groq_model()` connect `Community 8` to `Community 3`, `Community 4`, `Community 6`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
-- **Why does `hybrid_retrieve()` connect `Community 2` to `Community 4`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
-- **Are the 10 inferred relationships involving `Gap Analysis Agent — API Router.  POST /api/analyze-gaps/   - Fetches user sk` (e.g. with `DeepResearchRequest` and `DeepResearchResponse`) actually correct?**
-  _`Gap Analysis Agent — API Router.  POST /api/analyze-gaps/   - Fetches user sk` has 10 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 12 inferred relationships involving `ValidationResult` (e.g. with `Deep Researcher Agent — LangGraph topology.    plan -> search -> [critic router]` and `Deep Researcher — LLM-as-judge evaluation.  Scores a generated Pathway against a`) actually correct?**
-  _`ValidationResult` has 12 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 10 inferred relationships involving `Pathway` (e.g. with `Deep Researcher Agent — LangGraph topology.    plan -> search -> [critic router]` and `Deep Researcher — LLM-as-judge evaluation.  Scores a generated Pathway against a`) actually correct?**
-  _`Pathway` has 10 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro`, `Run a recency-filtered web search; returns normalized result dicts.`, `Auth dependency — verifies Supabase user JWTs.  The Supabase project signs token` to the rest of the system?**
-  _47 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `ResumeExtraction` connect `Community 2` to `Community 0`, `Community 1`, `Community 12`?**
+  _High betweenness centrality (0.061) - this node is a cross-community bridge._
+- **Why does `get_groq_model()` connect `Community 11` to `Community 0`, `Community 1`, `Community 4`, `Community 6`, `Community 9`?**
+  _High betweenness centrality (0.047) - this node is a cross-community bridge._
+- **Why does `_invoke_llm()` connect `Community 1` to `Community 11`?**
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
+- **Are the 28 inferred relationships involving `ResumeExtraction` (e.g. with `ProfileUpdate` and `SkillIn`) actually correct?**
+  _`ResumeExtraction` has 28 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 20 inferred relationships involving `ValidationResult` (e.g. with `Deep Researcher Agent — LangGraph topology.    plan -> search -> [critic router]` and `Deep Researcher — LLM-as-judge evaluation.  Scores a generated Pathway against a`) actually correct?**
+  _`ValidationResult` has 20 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 17 inferred relationships involving `Pathway` (e.g. with `Deep Researcher Agent — LangGraph topology.    plan -> search -> [critic router]` and `Deep Researcher — LLM-as-judge evaluation.  Scores a generated Pathway against a`) actually correct?**
+  _`Pathway` has 17 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `Intentionally errors — used to verify Sentry capture end-to-end.      Disabled`, `Deep Researcher — prompt templates.  Planner / Critic / Structurer originate fro`, `Run a recency-filtered web search; returns normalized result dicts.` to the rest of the system?**
+  _117 weakly-connected nodes found - possible documentation gaps or missing edges._

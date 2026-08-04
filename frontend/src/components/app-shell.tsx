@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Compass, LayoutDashboard, User, Map, Briefcase, Target, LogOut } from "lucide-react";
+import { Compass, LayoutDashboard, User, Map, Briefcase, Target, Github, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
 import {
@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeSelector } from "@/components/theme-selector";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const navItems = [
   { to: "/roadmap", label: "Roadmap", icon: Map },
   { to: "/gaps", label: "Gaps", icon: Target },
   { to: "/jobs", label: "Jobs", icon: Briefcase },
+  { to: "/github-insights", label: "GitHub", icon: Github },
 ] as const;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -79,6 +81,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <span className="text-foreground">{targetingRole}</span>
               </div>
             )}
+            <ThemeSelector />
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="grid h-9 w-9 place-items-center rounded-full bg-coral text-coral-foreground font-semibold outline-none ring-offset-background transition-transform duration-200 hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-ring"

@@ -15,7 +15,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.dependencies.auth import get_current_user_id
+from app.dependencies.auth import require_user_id
 from app.dependencies.database import db_client
 from app.deep_researcher.agent import deep_researcher_agent
 from app.deep_researcher.schemas import (
@@ -28,6 +28,7 @@ from app.deep_researcher.schemas import (
 )
 from app.gap_analysis.hybrid_retrieval import resolve_role_slug
 from app.roadmap_generation.service import upsert_role_milestones
+from app.utils.resumes import latest_resume_id, user_resume_ids
 
 logger = logging.getLogger(__name__)
 
@@ -94,23 +95,6 @@ def _persist_learning_pathway(
         logger.warning("learning_pathways persistence failed: %s", e)
 
 
-def _load_user_resume_ids(user_id: str) -> List[str]:
-    """All of the user's resume ids, newest first. Strictly scoped to user_id."""
-    resp = (
-        db_client.table("resumes")
-        .select("id")
-        .eq("user_id", user_id)
-        .order("created_at", desc=True)
-        .execute()
-    )
-    return [r["id"] for r in (resp.data or []) if r.get("id")]
-
-
-def _load_user_resume_id(user_id: str) -> str | None:
-    ids = _load_user_resume_ids(user_id)
-    return ids[0] if ids else None
-
-
 def _normalize_learning_pathway_row(row: dict) -> dict:
     import json
     
@@ -127,8 +111,8 @@ def _normalize_learning_pathway_row(row: dict) -> dict:
     if description:
         try:
             debug_info = json.loads(description)
-        except Exception:
-            pass
+        except (json.JSONDecodeError, TypeError) as e:
+            logger.debug("learning pathway description not JSON: %s", e)
 
     return {
         "success": True,
@@ -152,7 +136,7 @@ def _load_gaps(user_id: str, role_title: str) -> List[GapIn]:
     "latest resume" — we take whichever resume has the most recent skill_gaps
     for this role (by created_at).
     """
-    resume_ids = _load_user_resume_ids(user_id)
+    resume_ids = user_resume_ids(user_id)
     if not resume_ids:
         return []
     resp = (
@@ -193,11 +177,8 @@ def _load_gaps(user_id: str, role_title: str) -> List[GapIn]:
 @router.post("/", response_model=DeepResearchResponse)
 def deep_research(
     req: DeepResearchRequest,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(require_user_id),
 ):
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
     role_resp = (
         db_client.table("target_roles")
         .select("id,title")
@@ -211,7 +192,7 @@ def deep_research(
     role_title = role_resp.data[0]["title"]
     role_slug = resolve_role_slug(role_title)
 
-    resume_id = _load_user_resume_id(user_id)
+    resume_id = latest_resume_id(user_id)
     if not resume_id:
         raise HTTPException(status_code=400, detail="Run resume extraction first")
 
@@ -222,10 +203,22 @@ def deep_research(
             detail="No gaps found for this role. Run gap analysis first.",
         )
 
+    # Fetch GitHub profile to enhance the prompt notes if available
+    github_notes = []
+    try:
+        github_resp = db_client.table("github_profiles").select("analysis_summary,coding_behavior").eq("user_id", user_id).execute()
+        if github_resp.data:
+            github_summary = github_resp.data[0].get("analysis_summary", "")
+            github_behavior = github_resp.data[0].get("coding_behavior", "")
+            if github_summary or github_behavior:
+                github_notes.append(f"GitHub Profile Context:\nSummary: {github_summary}\nCoding Behavior: {github_behavior}")
+    except Exception as e:
+        logger.warning(f"Failed to fetch GitHub profile for deep research context: {e}")
+
     state_input = {
         "gaps": gaps,
         "target_role": role_title,
-        "notes": [],
+        "notes": github_notes,
         "iteration": 0,
         "max_iter": max(1, min(req.max_iter, 6)),
         "retry_count": 0,
@@ -306,11 +299,8 @@ def deep_research(
 def latest_pathway(
     target_role_id: str | None = None,
     role_slug: str | None = None,
-    user_id: str = Depends(get_current_user_id),
+    user_id: str = Depends(require_user_id),
 ):
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
     # Resolve the canonical slug the same way POST does, so a pathway saved
     # under ROLE_SLUG_MAP's slug is reachable. target_role_id is preferred;
     # role_slug is kept only as a legacy fallback.

@@ -93,11 +93,28 @@ export async function uploadResume(file: File): Promise<ParseResumeResult> {
   });
 }
 
+export async function submitManualResume(data: any): Promise<ParseResumeResult> {
+  return request<ParseResumeResult>("/api/parse-resume/manual", {
+    method: "POST",
+    jsonBody: data,
+  });
+}
+
 export async function getLatestResume() {
   return request<{ success: boolean; resume: any | null }>(
     "/api/parse-resume/latest",
     { method: "GET" },
   );
+}
+
+export async function getAllResumes() {
+  return request<{ success: boolean; resumes: any[] }>("/api/parse-resume/all");
+}
+
+export async function selectResume(resumeId: string) {
+  return request<{ success: boolean; resume_id: string }>(`/api/parse-resume/select/${resumeId}`, {
+    method: "POST"
+  });
 }
 
 // ── Profile editing ─────────────────────────────────────────────────────────
@@ -420,3 +437,13 @@ export function getCachedJobSearchResponse(): JobSearchResponse | undefined {
 }
 
 export const API_BASE = API_BASE_URL;
+
+// ── Generic client (axios-style shim used by the GitHub routes) ──────────────
+// ponytail: thin wrapper over request() so prod's github code (apiClient.get/post
+// returning {data}) works without an axios dep. Add more verbs if a route needs them.
+export const apiClient = {
+  get: async <T = any>(path: string) => ({ data: await request<T>(path) }),
+  post: async <T = any>(path: string, body?: unknown) => ({
+    data: await request<T>(path, { method: "POST", jsonBody: body }),
+  }),
+};

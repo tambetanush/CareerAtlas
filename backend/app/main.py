@@ -13,6 +13,7 @@ from app.roadmap_generation.router import router as roadmap_router
 from app.job_hunter.router import router as jobs_router
 from app.deep_researcher.router import router as deep_research_router
 from app.target_roles.router import router as target_roles_router
+from app.github_analysis.router import router as github_router
 
 logger = logging.getLogger(__name__)
 
@@ -21,19 +22,22 @@ if settings.sentry_dsn:
     sentry_sdk.init(
         dsn=settings.sentry_dsn,
         environment=settings.environment,
-        send_default_pii=True,
+        send_default_pii=False,
         traces_sample_rate=0.2,
     )
 
 app = FastAPI(title="CareerAtlas API", version="1.0.0")
 
 # ── CORS ─────────────────────────────────────────────────────────────────────
+# Allowed origins come exclusively from CORS_ORIGINS (comma-separated). The
+# regex only permits localhost/127.0.0.1 on any port for local dev — it must
+# never match a public wildcard: with allow_credentials=True a reflected
+# wildcard origin lets any attacker-controlled site make credentialed requests.
 origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    # localhost (any port) for dev + any *.vercel.app (covers preview deploys).
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$|^https://[a-z0-9-]+\.vercel\.app$",
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -74,9 +78,11 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     # it — report it explicitly, and flush before Cloud Run throttles CPU.
     sentry_sdk.capture_exception(exc)
     sentry_sdk.flush(timeout=2.0)
+    # Always log the failure — even rate-limit cases that return a friendly 503 —
+    # so nothing is swallowed without a server-side trace.
+    logger.exception("Unhandled error on %s %s", request.method, request.url.path)
     if _is_rate_limit(str(exc)):
         return JSONResponse(status_code=503, content={"detail": _BUSY_MESSAGE})
-    logger.exception("Unhandled error on %s %s", request.method, request.url.path)
     return JSONResponse(status_code=500, content={"detail": "Internal server error."})
 
 
@@ -87,6 +93,7 @@ app.include_router(roadmap_router)
 app.include_router(jobs_router)
 app.include_router(deep_research_router)
 app.include_router(target_roles_router)
+app.include_router(github_router)
 
 
 @app.get("/health")
@@ -96,5 +103,11 @@ def health_check():
 
 @app.get("/sentry-debug")
 def sentry_debug():
-    """Intentionally errors — used to verify Sentry capture end-to-end."""
+    """Intentionally errors — used to verify Sentry capture end-to-end.
+
+    Disabled outside development so it can't be used to trigger errors or probe
+    the deployment in production.
+    """
+    if settings.environment.lower() not in ("development", "dev", "local"):
+        raise StarletteHTTPException(status_code=404, detail="Not Found")
     raise RuntimeError("Sentry backend verification — intentional test error.")
