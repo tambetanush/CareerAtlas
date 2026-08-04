@@ -10,8 +10,9 @@ CareerAtlas is designed as a senior career advisor for early-career developers. 
 Through a multi-agent system, the app identifies exactly what skill gaps exist between your current profile and your target career role, retrieves online tutorials/courses to bridge those gaps, and ranks real job postings by skill compatibility.
 
 ### Quick Links
-- 🌐 **[Working Web App](https://careeratlas.driptoagain2.workers.dev)**
-- 📖 **[Deep Wiki Documentation](https://deepwiki.com/driptobhattacharyya/Career-Atlas)**
+
+- 🌐 **[Working Web App](https://careeratlas.tambetanush.workers.dev)**
+- 📖 **[Deep Wiki Documentation](https://deepwiki.com/tambetanush/CareerAtlas)**
 
 ## Key Features
 
@@ -33,7 +34,7 @@ Through a multi-agent system, the app identifies exactly what skill gaps exist b
 - **Backend:** FastAPI, LangChain, Python 3.12, Uvicorn, pytest.
 - **Database & Storage:** Supabase (Postgres & Auth), Supabase storage for resumes.
 - **AI & RAG:** Gemini 1.5 & 3.5 Flash (resume extraction, gap analysis, job reasoning — with 1–4 key rotation, backoff, and Groq fallback), Groq Llama 3.3 70B (GitHub analysis, deep researcher, and structured fallback), Pinecone (skill taxonomy), Jina (rerank), Tavily (search).
-- **Deployment:** Backend on **AWS Lambda** (packaged via Docker and AWS Lambda Web Adapter), frontend on **Cloudflare Workers**, both auto-deployed from `prod` via GitHub Actions. See [`DEPLOYMENT_HANDOFF.md`](DEPLOYMENT_HANDOFF.md).
+- **Deployment:** Backend on **AWS Lightsail**, frontend on **Cloudflare Workers**.
 
 ## Quick Start
 
@@ -138,10 +139,10 @@ A LangGraph search planner evaluated on curriculum structures verified relevant 
 Validated location and role relevance filters on Adzuna results.
 ![Job Hunter Evaluation](static/eval_job_hunter_evaluation_0.png)
 
-## Contributors
+## Contributors (Original Project)
 
 - **Tanush Tambe** - Resume Extractor, Job Finder, Evaluation Notebooks
-- **Dripto Bhattacharyya** - Deep Researcher, Evaluation, Deployment
+- **Dripto Bhattacharyya** - Deep Researcher, GitHub Analyzer, Deployment
 - **Sidhaarth Shree** - Gap Analysis Agent, Evaluation
 - **G Hamsini** - Contributor
 - **Shivanshu Gupta** - Contributor
