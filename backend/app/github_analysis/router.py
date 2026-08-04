@@ -170,12 +170,13 @@ async def analyze_github_repos(
 async def get_github_insights(user_id: str = Depends(require_user_id)):
     """Powers the insights panel: stored profile + per-repo facts + quarantined
     skill suggestions (with evidence/confidence/confirmed)."""
-    # sync Supabase client blocks the event loop — run the 3 reads concurrently off-thread
-    profile_resp, repos_resp, evidence_resp = await asyncio.gather(
-        asyncio.to_thread(lambda: db_client.table("github_profiles").select("*").eq("user_id", user_id).execute()),
-        asyncio.to_thread(lambda: db_client.table("github_repositories").select("*").eq("user_id", user_id).execute()),
-        asyncio.to_thread(lambda: db_client.table("github_skill_evidence").select("*").eq("user_id", user_id).order("confidence", desc=True).execute())
-    )
+    def _fetch_insights():
+        profile = db_client.table("github_profiles").select("*").eq("user_id", user_id).execute()
+        repos = db_client.table("github_repositories").select("*").eq("user_id", user_id).execute()
+        evidence = db_client.table("github_skill_evidence").select("*").eq("user_id", user_id).order("confidence", desc=True).execute()
+        return profile, repos, evidence
+
+    profile_resp, repos_resp, evidence_resp = await asyncio.to_thread(_fetch_insights)
 
     return {
         "success": True,

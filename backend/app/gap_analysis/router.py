@@ -77,17 +77,17 @@ async def analyze_gaps(
             if resume_resp.data:
                 resume = resume_resp.data[0]
                 resume_id = resume["id"]
-                user_headline = resume.get("headline", "")
+                user_headline = resume.get("headline") or ""
 
-                # Fetch skills scoped to this resume only, running queries concurrently
-                skills_task = asyncio.to_thread(db_client.table("skills").select("skill").eq("resume_id", resume_id).execute)
-                langs_task = asyncio.to_thread(db_client.table("programming_languages").select("language").eq("resume_id", resume_id).execute)
-                confirmed_task = asyncio.to_thread(db_client.table("github_skill_evidence").select("skill").eq("user_id", user_id).eq("confirmed", True).execute)
-                github_task = asyncio.to_thread(db_client.table("github_profiles").select("analysis_summary,coding_behavior").eq("user_id", user_id).execute)
+                # Fetch all data sequentially in a single thread to be thread-safe
+                def _fetch_all():
+                    s_resp = db_client.table("skills").select("skill").eq("resume_id", resume_id).execute()
+                    l_resp = db_client.table("programming_languages").select("language").eq("resume_id", resume_id).execute()
+                    c_resp = db_client.table("github_skill_evidence").select("skill").eq("user_id", user_id).eq("confirmed", True).execute()
+                    g_resp = db_client.table("github_profiles").select("analysis_summary,coding_behavior").eq("user_id", user_id).execute()
+                    return s_resp, l_resp, c_resp, g_resp
 
-                skills_resp, langs_resp, confirmed_resp, github_resp = await asyncio.gather(
-                    skills_task, langs_task, confirmed_task, github_task
-                )
+                skills_resp, langs_resp, confirmed_resp, github_resp = await asyncio.to_thread(_fetch_all)
 
                 user_skills.extend([s["skill"] for s in skills_resp.data if s.get("skill")])
 
@@ -101,8 +101,8 @@ async def analyze_gaps(
 
                 # GitHub prose stays as context only (never a counted skill).
                 if github_resp.data:
-                    github_summary = github_resp.data[0].get("analysis_summary", "")
-                    github_behavior = github_resp.data[0].get("coding_behavior", "")
+                    github_summary = github_resp.data[0].get("analysis_summary") or ""
+                    github_behavior = github_resp.data[0].get("coding_behavior") or ""
                     if github_summary or github_behavior:
                         user_headline += f"\n\nGitHub Profile Context:\nSummary: {github_summary}\nCoding Behavior: {github_behavior}"
         except Exception:

@@ -85,10 +85,10 @@ async def generate_gaps_for_user(
         user_skills=user_skills,
         target_role_title=target_role_title,
         user_headline=user_headline,
-        semantic_top_k=20,
-        bm25_top_k=20,
-        fused_top_n=15,
-        rerank_top_n=10,
+        semantic_top_k=30,
+        bm25_top_k=30,
+        fused_top_n=25,
+        rerank_top_n=20,
     )
 
     # Format retrieved skills for the LLM
@@ -113,16 +113,18 @@ async def generate_gaps_for_user(
 
     role_requirements_text = "\n".join(req_lines)
 
-    # 2. LLM Structured Generation
-    result: GapAnalysisResponse = await ainvoke_gemini(
-        prompt=GAP_ANALYSIS_PROMPT.invoke({
+    # 2. LLM Structured Generation (using Groq)
+    from app.utils.llm_factory import get_groq_model
+    groq_model = get_groq_model(temperature=0.0)
+    chain = groq_model.with_structured_output(GapAnalysisResponse)
+
+    result: GapAnalysisResponse = await chain.ainvoke(
+        GAP_ANALYSIS_PROMPT.invoke({
             "target_role": target_role_title,
             "user_skills": ", ".join(user_skills),
             "user_headline": user_headline,
             "role_requirements": role_requirements_text,
-        }),
-        temperature=0.0,
-        schema=GapAnalysisResponse
+        })
     )
 
     # Deduplicate model output by normalized skill name while preserving order.

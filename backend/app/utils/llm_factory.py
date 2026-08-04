@@ -26,7 +26,7 @@ def _get_rotating_gemini_model(model_name: str, temperature: float, attempt: int
     )
 
 
-def invoke_gemini(prompt: Any, model_name: str = "gemini-3.5-flash", temperature: float = 0.2, schema: Any = None, max_retries: int = 5):
+def invoke_gemini(prompt: Any, model_name: str = "gemini-1.5-flash", temperature: float = 0.2, schema: Any = None, max_retries: int = 5):
     last_exception = None
     for attempt in range(max_retries):
         try:
@@ -44,10 +44,22 @@ def invoke_gemini(prompt: Any, model_name: str = "gemini-3.5-flash", temperature
             logger.warning(f"Gemini API Error on attempt {attempt+1}: {e}")
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)
-    raise last_exception
+    
+    # Fallback to Groq if Gemini fails completely
+    logger.warning("Gemini failed completely. Falling back to Groq...")
+    try:
+        groq_model = get_groq_model(temperature=temperature)
+        chain = groq_model.with_structured_output(schema) if schema else groq_model
+        if hasattr(prompt, "invoke") and hasattr(prompt, "|"):
+            return (prompt | chain).invoke({})
+        else:
+            return chain.invoke(prompt)
+    except Exception as groq_err:
+        logger.error(f"Groq fallback also failed: {groq_err}")
+        raise last_exception
 
 
-async def ainvoke_gemini(prompt: Any, model_name: str = "gemini-3.5-flash", temperature: float = 0.2, schema: Any = None, max_retries: int = 5):
+async def ainvoke_gemini(prompt: Any, model_name: str = "gemini-1.5-flash", temperature: float = 0.2, schema: Any = None, max_retries: int = 5):
     last_exception = None
     for attempt in range(max_retries):
         try:
@@ -64,7 +76,19 @@ async def ainvoke_gemini(prompt: Any, model_name: str = "gemini-3.5-flash", temp
             logger.warning(f"Gemini API Error on attempt {attempt+1}: {e}")
             if attempt < max_retries - 1:
                 await asyncio.sleep(2 ** attempt)
-    raise last_exception
+    
+    # Fallback to Groq if Gemini fails completely
+    logger.warning("Gemini failed completely. Falling back to Groq...")
+    try:
+        groq_model = get_groq_model(temperature=temperature)
+        chain = groq_model.with_structured_output(schema) if schema else groq_model
+        if hasattr(prompt, "ainvoke") and hasattr(prompt, "|"):
+            return await (prompt | chain).ainvoke({})
+        else:
+            return await chain.ainvoke(prompt)
+    except Exception as groq_err:
+        logger.error(f"Groq fallback also failed: {groq_err}")
+        raise last_exception
 
 
 @lru_cache()

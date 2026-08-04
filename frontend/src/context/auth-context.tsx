@@ -67,7 +67,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    if (disableAuth) return;
+    if (disableAuth) {
+      const mockUser = {
+        id: (import.meta.env.VITE_DEV_USER_ID as string | undefined) || "dev-user",
+        email: "dev@local",
+        app_metadata: {},
+        user_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
+      } as unknown as User;
+      setUser(mockUser);
+      setSession({
+        access_token: "mock-token",
+        token_type: "bearer",
+        expires_in: 3600,
+        refresh_token: "mock-refresh",
+        user: mockUser,
+      } as unknown as Session);
+      return;
+    }
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -78,7 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    if (disableAuth) return;
+    if (disableAuth) {
+      setUser(null);
+      setSession(null);
+      return;
+    }
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   };

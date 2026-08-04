@@ -29,13 +29,19 @@ const STEPS = disableAuth
 
 function Onboarding() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, signOut, signInWithGoogle } = useAuth();
   
   // Start at step 1 if already authenticated, else step 0
   const [step, setStep] = useState(disableAuth ? 0 : 0);
   useEffect(() => {
     if (!disableAuth && user && step === 0) setStep(1);
   }, [user, step]);
+
+  useEffect(() => {
+    if (disableAuth && !user) {
+      signInWithGoogle();
+    }
+  }, [user, signInWithGoogle]);
 
   const latestResume = useLatestResume();
   const uploadMutation = useUploadResume();
