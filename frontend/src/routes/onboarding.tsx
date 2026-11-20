@@ -477,7 +477,7 @@ function StepRole({
               )}
             >
               <div className="flex items-start justify-between">
-                <span className="text-2xl">✨</span>
+                <Sparkles className="h-6 w-6 text-coral" />
                 {roleId === "custom" && (
                   <span className="grid h-6 w-6 place-items-center rounded-full bg-coral text-coral-foreground">
                     <Check className="h-3.5 w-3.5" />

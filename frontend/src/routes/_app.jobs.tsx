@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, MapPin, X, Check, Loader2, BarChart3, ArrowUpRight } from "lucide-react";
@@ -55,12 +55,10 @@ function Jobs() {
     },
   });
 
-  const localRoleTitle = isBrowser ? window.localStorage.getItem("careeratlas:selected_role_title") : null;
-  const targetRole =
+  const targetRole: string | null =
     roles.find((r: any) => r.id === profile?.target_role_id)?.title ||
     profile?.target_role_title ||
-    localRoleTitle ||
-    "Target Role";
+    null;
 
   if (isLoading) {
     return (
@@ -92,8 +90,16 @@ function Jobs() {
           <p className="text-xs uppercase tracking-widest text-muted-foreground">Job search</p>
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Ranked job matches</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Results are scored across semantic fit, skill overlap, experience, and education for{" "}
-            <span className="font-medium text-foreground">{targetRole}</span>.
+            Results are scored across semantic fit, skill overlap, experience, and education
+            {targetRole ? (
+              <>
+                {" "}for <span className="font-medium text-foreground">{targetRole}</span>.
+              </>
+            ) : (
+              <>
+                . <Link to="/profile" className="font-medium text-primary underline-offset-4 hover:underline">Pick a target role</Link> to start.
+              </>
+            )}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -175,7 +181,27 @@ function Jobs() {
         ))}
         {filtered.length === 0 && (
           <div className="rounded-3xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            No jobs match your filters.
+            {jobs.length > 0 ? (
+              "No jobs match your filters."
+            ) : (
+              <>
+                No live postings found yet. Press "Refresh from Job Agent" to search
+                {targetRole && (
+                  <>
+                    , or{" "}
+                    <a
+                      href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(targetRole)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      browse {targetRole} roles on LinkedIn
+                    </a>
+                  </>
+                )}
+                .
+              </>
+            )}
           </div>
         )}
       </motion.div>
@@ -257,7 +283,7 @@ function JobCard({ job, onOpen }: { job: JobResult; onOpen: () => void }) {
                 </span>
               ))
             ) : (
-              <span className="text-xs text-muted-foreground">No strengths extracted yet.</span>
+              <span className="text-xs text-muted-foreground">No skills from your profile are named in this posting.</span>
             )}
           </div>
         </div>
@@ -346,7 +372,7 @@ function JobDrawer({ job, onClose }: { job: JobResult; onClose: () => void }) {
                 </span>
               ))
             ) : (
-              <span className="text-xs text-muted-foreground">No strengths returned.</span>
+              <span className="text-xs text-muted-foreground">No skills from your profile are named in this posting.</span>
             )}
           </div>
         </div>

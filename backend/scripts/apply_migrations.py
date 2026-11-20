@@ -90,21 +90,15 @@ def run_migrations():
     try:
         cursor = conn.cursor()
         
-        # Read and apply 006_github_analysis.sql
-        file_006 = ROOT / "sql" / "006_github_analysis.sql"
-        print(f"\nApplying migration: {file_006.name}...")
-        sql_006 = file_006.read_text(encoding="utf-8")
-        cursor.execute(sql_006)
-        conn.commit()
-        print(f"Successfully applied {file_006.name}")
-        
-        # Read and apply 007_github_hardening.sql
-        file_007 = ROOT / "sql" / "007_github_hardening.sql"
-        print(f"\nApplying migration: {file_007.name}...")
-        sql_007 = file_007.read_text(encoding="utf-8")
-        cursor.execute(sql_007)
-        conn.commit()
-        print(f"Successfully applied {file_007.name}")
+        # Pass file names to apply only those (e.g. `008_public_jobs.sql`); 006 is not
+        # idempotent, so re-running the default list on an existing database fails.
+        names = sys.argv[1:] or ["006_github_analysis.sql", "007_github_hardening.sql"]
+        for name in names:
+            path = ROOT / "sql" / name
+            print(f"\nApplying migration: {path.name}...")
+            cursor.execute(path.read_text(encoding="utf-8"))
+            conn.commit()
+            print(f"Successfully applied {path.name}")
         
         print("\nAll database migrations applied successfully!")
         

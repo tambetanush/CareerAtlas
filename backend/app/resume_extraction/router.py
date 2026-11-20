@@ -321,7 +321,7 @@ async def fetch_full_resume(resume_id: str) -> dict[str, Any]:
 
 
 @router.post("/")
-async def parse_resume(
+def parse_resume(
     file: UploadFile | None = File(default=None),
     resume_key: str | None = Form(default=None),
     user_id: str = Depends(require_user_id),
@@ -330,7 +330,7 @@ async def parse_resume(
         resolved_resume_key = resume_key
         pdf_bytes: bytes
         if file is not None:
-            upload_bytes = await file.read()
+            upload_bytes = file.file.read()
             if not upload_bytes:
                 raise HTTPException(status_code=400, detail="Uploaded file is empty.")
             timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
@@ -362,7 +362,7 @@ async def parse_resume(
 
 
 @router.post("/manual")
-async def submit_manual_resume(
+def submit_manual_resume(
     payload: ResumeExtraction,
     user_id: str = Depends(require_user_id),
 ):
@@ -432,6 +432,25 @@ class ExperienceUpdate(BaseModel):
     company: str | None = None
     start_date: str | None = None
     end_date: str | None = None
+
+
+@router.get("/profile")
+async def get_profile(user_id: str = Depends(require_user_id)):
+    """Return the user's saved target role so it survives across devices."""
+    try:
+        rows = (
+            db_client.table("profiles")
+            .select("target_role_id")
+            .eq("user_id", user_id)
+            .limit(1)
+            .execute()
+            .data
+            or []
+        )
+    except Exception:
+        logger.exception("profile read failed for user %s", user_id)
+        rows = []
+    return {"success": True, "target_role_id": rows[0].get("target_role_id") if rows else None}
 
 
 @router.patch("/profile")

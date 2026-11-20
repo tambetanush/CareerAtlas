@@ -17,6 +17,7 @@ import {
   getLatestPathway,
   getLatestResume,
   getTargetRoles,
+  getSavedProfile,
   listMilestones,
   cacheJobSearchResponse,
   researchJobs,
@@ -107,12 +108,34 @@ export function useProfile() {
       const resume = latestResume.data;
       if (!resume) return null;
       const isBrowser = typeof window !== "undefined";
-      const selectedRoleId = isBrowser
+      const localRoleId = isBrowser
         ? window.localStorage.getItem("careeratlas:selected_role_id")
         : null;
-      const selectedRoleTitle = isBrowser
-        ? window.localStorage.getItem("careeratlas:selected_role_title")
-        : null;
+      // The server copy wins so the role survives new devices / cleared storage.
+      const savedRoleId = await getSavedProfile()
+        .then((p) => p.target_role_id)
+        .catch(() => null);
+      const selectedRoleId = savedRoleId || localRoleId;
+      // A title cached for a different role id would be wrong; let callers resolve it from the roles list.
+      const selectedRoleTitle =
+        isBrowser && selectedRoleId === localRoleId
+          ? window.localStorage.getItem("careeratlas:selected_role_title")
+          : null;
+      if (isBrowser && savedRoleId && savedRoleId !== localRoleId) {
+        window.localStorage.setItem("careeratlas:selected_role_id", savedRoleId);
+        window.localStorage.removeItem("careeratlas:selected_role_title");
+      }
+      const sections = [
+        resume.summary,
+        resume.contact?.email,
+        (resume.skills || []).length,
+        (resume.experience || []).length,
+        (resume.education || []).length,
+        (resume.projects || []).length,
+      ];
+      const completeness = Math.round(
+        (sections.filter(Boolean).length / sections.length) * 100,
+      );
       const fullName =
         resume.full_name ||
         resume.contact?.name ||
@@ -126,7 +149,7 @@ export function useProfile() {
         location: resume.contact?.location || "",
         github: resume.contact?.github || "",
         summary: resume.summary || "",
-        completeness: 30,
+        completeness,
         target_role_id: selectedRoleId || null,
         target_role_title: selectedRoleTitle || null,
       };

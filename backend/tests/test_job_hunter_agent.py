@@ -8,36 +8,6 @@ from app.job_hunter.schemas import JobResult
 
 # ── text / json helpers ──────────────────────────────────────────────────
 
-def test_strip_code_fences_removes_json_fence():
-    assert agent._strip_code_fences('```json\n[{"a": 1}]\n```') == '[{"a": 1}]'
-
-
-def test_strip_code_fences_plain_text():
-    assert agent._strip_code_fences("  hello  ") == "hello"
-    assert agent._strip_code_fences(None) == ""
-
-
-def test_safe_json_parse_list():
-    assert agent.safe_json_parse('[{"x": 1}]') == [{"x": 1}]
-
-
-def test_safe_json_parse_dict_wrapped_in_list():
-    assert agent.safe_json_parse('{"x": 1}') == [{"x": 1}]
-
-
-def test_safe_json_parse_double_encoded_string():
-    assert agent.safe_json_parse('"[{\\"x\\": 1}]"') == [{"x": 1}]
-
-
-def test_safe_json_parse_fenced():
-    assert agent.safe_json_parse('```json\n[{"x": 1}]\n```') == [{"x": 1}]
-
-
-def test_safe_json_parse_invalid_returns_empty():
-    assert agent.safe_json_parse("not json") == []
-    assert agent.safe_json_parse(None) == []
-
-
 def test_tokenize_lowercases_and_keeps_symbols():
     assert agent.tokenize("Python, C++ and C#.NET") == {"python", "c++", "c#.net", "and"}
     assert agent.tokenize(None) == set()
@@ -71,27 +41,28 @@ def test_location_filter_unknown_city_uses_literal_match():
     assert agent.location_filter("Delhi", "kolkata") is False
 
 
-# ── fallback listings ──────────────────────────────────────────────────────
+# ── no invented listings; real Adzuna fields ───────────────────────────────
 
-def test_search_url_encodes_query_and_location():
-    url = agent._search_url("Data Scientist", "New York")
-    assert "keywords=Data%20Scientist" in url
-    assert "location=New%20York" in url
-    assert url.startswith("https://www.linkedin.com/jobs/search/")
-
-
-def test_fallback_jobs_count_and_company_cycling():
-    jobs = agent._fallback_jobs("Backend Engineer", "Pune", count=5)
-    assert len(jobs) == 5
-    assert jobs[0]["company"] == agent.FALLBACK_COMPANIES[0]
-    assert all(j["location"] == "Pune" for j in jobs)
-    assert all(j["job_id"].startswith("fallback-") for j in jobs)
+def test_no_adzuna_results_returns_empty_not_fake_jobs(monkeypatch):
+    monkeypatch.setattr(agent, "fetch_jobs", lambda *a, **k: [])
+    assert agent._fetch_jobs_with_fallback("Backend Engineer", "Pune") == []
+    res = agent.job_finder_agent({"skills": ["Python"]}, "Backend Engineer", "Pune")
+    assert res.jobs == [] and res.total_jobs_fetched == 0
 
 
-def test_fallback_jobs_defaults_location_to_remote():
-    jobs = agent._fallback_jobs("QA", "", count=2)
-    assert len(jobs) == 2
-    assert jobs[0]["location"] == "Remote"
+def test_format_salary():
+    assert agent._format_salary(600000, 1200000) == "₹6.0L – ₹12.0L"
+    assert agent._format_salary(800000, 800000) == "₹8.0L"
+    assert agent._format_salary(None, None) is None
+    assert agent._format_salary(0, None) is None
+
+
+def test_days_since():
+    from datetime import datetime, timedelta, timezone
+    three_days_ago = (datetime.now(timezone.utc) - timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    assert agent._days_since(three_days_ago) == 3
+    assert agent._days_since(None) is None
+    assert agent._days_since("not a date") is None
 
 
 # ── vector math ─────────────────────────────────────────────────────────────
@@ -120,7 +91,8 @@ def test_build_resume_representation_aggregates_skills():
         "summary": "Data engineer",
     }
     structured, semantic = agent.build_resume_representation(resume)
-    assert structured["skills"] == {"python", "sql", "go", "english", "etl", "airflow", "docker"}
+    # spoken languages are not job skills
+    assert structured["skills"] == {"python", "sql", "go", "etl", "airflow", "docker"}
     assert structured["has_experience"] is True
     assert structured["has_education"] is False
     assert "data engineer" in semantic.lower()
@@ -169,6 +141,35 @@ def test_score_jobs_experience_education_defaults():
     assert s["education"] == 0.5
 
 
+def test_skill_overlap_matches_multi_word_skills_and_not_substrings(monkeypatch):
+    monkeypatch.setattr(agent, "embed_batch", lambda texts: (_ for _ in ()).throw(RuntimeError("no key")))
+    resume = {"skills": ["Machine Learning", "Java", "C++", "SQL", "Docker", "Kubernetes", "Go", "Rust"]}
+    jobs = [{"title": "ML Engineer", "description": "Machine learning with C++ and JavaScript, plus SQL."}]
+    scored = agent.score_jobs(resume, jobs)
+    assert scored[0]["_matched_tokens"] == ["c++", "machine learning", "sql"]  # "java" must not match "javascript"
+    # 8 resume skills but only 3 named in a short snippet -> 3/5, not 3/8
+    assert scored[0]["_scores"]["skill_overlap"] == pytest.approx(0.6)
+
+
+def test_title_boost_ignores_stopwords(monkeypatch):
+    monkeypatch.setattr(agent, "embed_batch", lambda texts: (_ for _ in ()).throw(RuntimeError("no key")))
+    resume = {"skills": ["python"], "headline": "Student in a data program"}
+    unrelated = agent.score_jobs(resume, [{"title": "Head of Sales in a Bank", "description": ""}])[0]["_scores"]
+    related = agent.score_jobs(resume, [{"title": "Data Engineer", "description": ""}])[0]["_scores"]
+    assert related["final"] > unrelated["final"]
+
+
+def test_infer_seniority():
+    assert agent.infer_seniority("Machine Learning Intern") == "Intern"
+    assert agent.infer_seniority("Sr. Backend Engineer") == "Senior"
+    assert agent.infer_seniority("Data Analyst / Senior Data Analyst") == "Senior"
+    assert agent.infer_seniority("Junior Developer") == "Junior"
+    assert agent.infer_seniority("Associate Software Engineer") == "Entry"
+    assert agent.infer_seniority("Software Engineer II") == "Mid"
+    assert agent.infer_seniority("Backend Engineer") is None
+    assert agent.infer_seniority("Internal Tools Engineer") is None
+
+
 # ── compact resume + prompt building ────────────────────────────────────────
 
 def test_build_compact_resume_for_llm():
@@ -191,39 +192,30 @@ def test_build_bulk_explanation_prompt_contains_ids():
     jobs = [{"job_id": "abc", "title": "Dev", "company": "Acme", "description": "x" * 1000, "_scores": {"final": 0.5}}]
     prompt = agent.build_bulk_explanation_prompt(resume, jobs)
     assert "abc" in prompt
-    assert "JSON array" in prompt
+    assert "exact job_id" in prompt
     # description is truncated to 800 chars in the compact job payload
     assert "x" * 801 not in prompt
 
 
-# ── gemini content flattening ───────────────────────────────────────────────
+# ── explanations ─────────────────────────────────────────────────────────────
 
-class _Resp:
-    def __init__(self, content):
-        self.content = content
-
-
-def test_gemini_generate_json_string_content(monkeypatch):
-    monkeypatch.setattr(agent, "invoke_gemini", lambda *a, **k: _Resp("hello"))
-    assert agent.gemini_generate_json("p") == "hello"
+def test_explain_jobs_keys_by_string_id(monkeypatch):
+    result = agent._JobExplanations(jobs=[agent._JobExplanation(job_id="42", strengths=["python"], gaps=[], reasoning="ok")])
+    monkeypatch.setattr(agent, "invoke_llm", lambda *a, **k: result)
+    assert agent.explain_jobs("p")["42"]["strengths"] == ["python"]
 
 
-def test_gemini_generate_json_list_content(monkeypatch):
-    content = ["a", {"text": "b"}, {"notext": 1}]
-    monkeypatch.setattr(agent, "invoke_gemini", lambda *a, **k: _Resp(content))
-    assert agent.gemini_generate_json("p") == "a\nb"
-
-
-# ── fallback explanations ────────────────────────────────────────────────────
-
-def test_fallback_explanations_matches_skills_and_gaps():
+def test_fallback_explanations_never_invents_gaps():
     resume = {"skills": ["Python", "Testing"]}
-    jobs = [{"job_id": "1", "title": "Python Engineer", "description": "python testing role"}]
+    jobs = [
+        {"job_id": "1", "title": "Python Engineer", "description": "python testing role"},
+        {"job_id": "2", "title": "Engineer", "description": "great team"},
+    ]
     out = agent._fallback_explanations(resume, jobs)
-    assert "python" in out["1"]["strengths"]
-    assert "testing" in out["1"]["strengths"]
-    # "testing" is matched, so it is excluded from the canned gap list
-    assert "testing" not in out["1"]["gaps"]
+    assert out["1"]["strengths"] == ["python", "testing"]
+    assert out["1"]["gaps"] == [] and out["2"]["gaps"] == []
+    assert "python" in out["1"]["reasoning"]
+    assert out["2"]["strengths"] == []
 
 
 # ── result builder ───────────────────────────────────────────────────────────
@@ -248,14 +240,32 @@ def test_build_job_result_maps_scores_and_explanation():
 
 # ── end-to-end agent (hermetic: no adzuna/jina/gemini keys) ─────────────────
 
-def test_job_finder_agent_uses_fallbacks(monkeypatch):
-    # No Adzuna key -> fetch returns [] -> fallback jobs; force LLM explanation to fail.
-    monkeypatch.setattr(agent, "gemini_generate_json", lambda prompt: (_ for _ in ()).throw(RuntimeError("no llm")))
-    resume = {"skills": ["python"], "experience": [{"title": "eng"}]}
-    resp = agent.job_finder_agent(resume, "Backend Engineer", "Pune", top_k=3)
-    assert resp.query_role == "Backend Engineer"
-    assert resp.user_location_preference == "Pune"
-    assert len(resp.jobs) == 3
-    assert all(isinstance(j, JobResult) for j in resp.jobs)
-    # Explanations fell back, so every job still has non-empty reasoning.
+def _offline(monkeypatch, jobs):
+    monkeypatch.setattr(agent, "fetch_jobs", lambda *a, **k: jobs)
+    monkeypatch.setattr(agent, "embed_batch", lambda texts: (_ for _ in ()).throw(RuntimeError("no jina")))
+
+
+def test_job_finder_agent_falls_back_per_job(monkeypatch):
+    jobs = [
+        {"job_id": str(i), "title": f"Senior Backend Engineer {i}", "location": "Pune", "description": "python apis", "apply_url": f"https://a/{i}"}
+        for i in range(3)
+    ]
+    _offline(monkeypatch, jobs)
+    # LLM explains only job "0"; the other two must get the per-job fallback, not "No explanation".
+    partial = agent._JobExplanations(jobs=[agent._JobExplanation(job_id="0", strengths=["APIs"], gaps=["Go"], reasoning="Strong fit")])
+    monkeypatch.setattr(agent, "invoke_llm", lambda *a, **k: partial)
+    resp = agent.job_finder_agent({"skills": ["python"], "experience": [{"title": "eng"}]}, "Backend Engineer", "Pune", top_k=3)
+    by_id = {j.job_id: j for j in resp.jobs}
+    assert by_id["0"].explanation.reasoning == "Strong fit"
+    assert by_id["1"].explanation.strengths == ["python"]
+    assert all(j.seniority == "Senior" for j in resp.jobs)
+    assert all(j.score.skill_overlap == 1.0 for j in resp.jobs)
+
+
+def test_job_finder_agent_survives_llm_failure(monkeypatch):
+    _offline(monkeypatch, [{"job_id": "a", "title": "Dev", "location": "Pune", "description": "python", "apply_url": "https://a"}])
+    monkeypatch.setattr(agent, "invoke_llm", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("no llm")))
+    resp = agent.job_finder_agent({"skills": ["python"]}, "Backend Engineer", "Pune", top_k=3)
+    assert resp.query_role == "Backend Engineer" and len(resp.jobs) == 1
+    assert resp.jobs[0].explanation.reasoning
     assert all(j.explanation.reasoning for j in resp.jobs)

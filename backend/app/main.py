@@ -1,7 +1,7 @@
 import logging
 
 import sentry_sdk
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -14,6 +14,9 @@ from app.job_hunter.router import router as jobs_router
 from app.deep_researcher.router import router as deep_research_router
 from app.target_roles.router import router as target_roles_router
 from app.github_analysis.router import router as github_router
+from app.llm_settings.router import router as llm_settings_router
+from app.public_jobs.router import router as public_jobs_router
+from app.dependencies.llm import llm_context
 
 logger = logging.getLogger(__name__)
 
@@ -87,13 +90,17 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 
 # ── Routers ──────────────────────────────────────────────────────────────────
-app.include_router(resume_router)
-app.include_router(gaps_router)
+# Routers that call an LLM get the per-request provider override (X-LLM-* headers).
+_llm = [Depends(llm_context)]
+app.include_router(resume_router, dependencies=_llm)
+app.include_router(gaps_router, dependencies=_llm)
 app.include_router(roadmap_router)
-app.include_router(jobs_router)
-app.include_router(deep_research_router)
+app.include_router(jobs_router, dependencies=_llm)
+app.include_router(deep_research_router, dependencies=_llm)
 app.include_router(target_roles_router)
-app.include_router(github_router)
+app.include_router(github_router, dependencies=_llm)
+app.include_router(llm_settings_router)
+app.include_router(public_jobs_router)
 
 
 @app.get("/health")

@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Plus, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { useGapAnalysis, useProfile, useTargetRoles, useRunGapAnalysis } from "@/hooks/queries";
@@ -42,15 +42,20 @@ function Gaps() {
     }
   })();
 
-  const sorted = [...gaps].sort((a: any, b: any) => b.relevance - a.relevance);
-  const localRoleTitle = isBrowser ? window.localStorage.getItem("careeratlas:selected_role_title") : null;
-  const targetRole =
+  // Gaps under 10% relevance are noise for the user.
+  const sorted = [...gaps]
+    .filter((g: any) => (g.relevance ?? 0) >= 10)
+    .sort((a: any, b: any) => b.relevance - a.relevance);
+  const targetRole: string | null =
     roles.find((r: any) => r.id === profile?.target_role_id)?.title ||
     profile?.target_role_title ||
-    localRoleTitle ||
-    "Target Role";
+    null;
 
   const runAnalysis = () => {
+    if (!targetRole) {
+      toast.error("Pick a target role first", { description: "Set it on your Profile page." });
+      return;
+    }
     runGap.mutate(
       { targetRoleTitle: targetRole, force: true },
       {
@@ -80,7 +85,19 @@ function Gaps() {
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Skill gap analysis</h1>
           <p className="mt-2 text-muted-foreground">
-            The skills standing between you and a typical <span className="font-medium text-foreground">{targetRole}</span> offer, ranked by impact.
+            {targetRole ? (
+              <>
+                The skills standing between you and a typical <span className="font-medium text-foreground">{targetRole}</span> offer, ranked by impact.
+              </>
+            ) : (
+              <>
+                No target role set yet.{" "}
+                <Link to="/profile" className="font-medium text-primary underline-offset-4 hover:underline">
+                  Pick one on your profile
+                </Link>{" "}
+                to see your gaps.
+              </>
+            )}
           </p>
         </div>
         <Button
@@ -138,13 +155,6 @@ function Gaps() {
 
               <div className="flex w-full flex-col items-end gap-3 sm:w-auto">
                 <RelevanceMeter value={g.relevance} />
-                <Button
-                  size="sm"
-                  className="rounded-full bg-coral text-coral-foreground hover:bg-coral/90"
-                  onClick={() => toast.success("Added to roadmap", { description: g.skill })}
-                >
-                  <Plus className="mr-1 h-4 w-4" /> Add to roadmap
-                </Button>
               </div>
             </div>
           </motion.li>
@@ -153,7 +163,7 @@ function Gaps() {
           <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center">
             <Sparkles className="mx-auto h-8 w-8 text-coral" />
             <p className="mt-3 text-sm text-muted-foreground">
-              No gap analysis yet for <span className="font-medium text-foreground">{targetRole}</span>.
+              No gap analysis yet{targetRole && <> for <span className="font-medium text-foreground">{targetRole}</span></>}.
               Run it to see your ranked skill gaps — needed before the roadmap's deep research.
             </p>
             <Button

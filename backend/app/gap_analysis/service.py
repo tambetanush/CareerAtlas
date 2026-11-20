@@ -9,10 +9,10 @@ Orchestrates the full pipeline:
 Uses Groq for structured gap identification (embeddings still use Gemini).
 """
 import logging
+import re
 from typing import List, Tuple, Dict, Any
 
 from langchain_core.prompts import PromptTemplate
-from app.utils.llm_factory import ainvoke_gemini
 from app.gap_analysis.schemas import GapAnalysisResponse, GapSchema
 from app.gap_analysis.hybrid_retrieval import (
     hybrid_retrieve,
@@ -55,6 +55,30 @@ Output strictly as JSON matching the schema. In "justifications", provide a cust
 )
 
 
+def _norm(name: str) -> str:
+    """Compare skill names loosely: "React.js", "ReactJS" and "react" are the same skill."""
+    n = re.sub(r"[^a-z0-9+#]", "", (name or "").lower())
+    return n[:-2] if n.endswith("js") and len(n) > 4 else n
+
+
+def filter_gaps(gaps: List[GapSchema], requirement_names: List[str], known: set[str]) -> List[GapSchema]:
+    """Keep LLM gaps that are real requirements the user lacks; drop duplicates."""
+    reqs = {_norm(r) for r in requirement_names}
+    out: List[GapSchema] = []
+    seen: set[str] = set()
+    for gap in gaps:
+        key = _norm(gap.skill)
+        if not key or key in seen or key in known:
+            continue
+        # Rule 9 of the prompt, enforced: only skills from the retrieved list (allowing light rewording).
+        if not any(key == r or key in r or r in key for r in reqs):
+            logger.info("Dropping gap not in retrieved requirements: %r", gap.skill)
+            continue
+        seen.add(key)
+        out.append(gap)
+    return out
+
+
 async def generate_gaps_for_user(
     user_skills: List[str],
     target_role_title: str,
@@ -91,6 +115,12 @@ async def generate_gaps_for_user(
         rerank_top_n=20,
     )
 
+    # Decide "already has it" in code, not in the prompt: retrieval ranks the user's own
+    # skills highest (the BM25 query is their skill list), so the LLM kept suggesting them.
+    known = {_norm(s) for s in user_skills}
+    already_have = [s["skill_name"] for s in retrieved_skills if _norm(s["skill_name"]) in known]
+    retrieved_skills = [s for s in retrieved_skills if _norm(s["skill_name"]) not in known]
+
     # Format retrieved skills for the LLM
     import math
     req_lines = []
@@ -111,12 +141,11 @@ async def generate_gaps_for_user(
         )
         req_lines.append(line)
 
-    role_requirements_text = "\n".join(req_lines)
+    role_requirements_text = "\n".join(req_lines) or "(none: the candidate already lists every retrieved requirement)"
 
-    # 2. LLM Structured Generation (using Groq)
-    from app.utils.llm_factory import get_groq_model
-    groq_model = get_groq_model(temperature=0.0)
-    chain = groq_model.with_structured_output(GapAnalysisResponse)
+    # 2. LLM structured generation on the active provider
+    from app.utils.llm_factory import get_runnable
+    chain = get_runnable(temperature=0.0, schema=GapAnalysisResponse)
 
     result: GapAnalysisResponse = await chain.ainvoke(
         GAP_ANALYSIS_PROMPT.invoke({
@@ -127,20 +156,13 @@ async def generate_gaps_for_user(
         })
     )
 
-    # Deduplicate model output by normalized skill name while preserving order.
-    deduped: List[GapSchema] = []
-    seen: set[str] = set()
-    for gap in result.gaps:
-        key = (gap.skill or "").strip().lower()
-        if not key or key in seen:
-            continue
-        seen.add(key)
-        deduped.append(gap)
+    deduped = filter_gaps(result.gaps, [s["skill_name"] for s in retrieved_skills], known)
 
     explainability = {
         "role_slug": role_slug,
         "taxonomy_source": taxonomy_source,  # curated | generated | unavailable (UI labels generated as experimental)
         "input_skill_count": len(user_skills),
+        "already_have": already_have,
         "justifications": getattr(result, "justifications", {}),
         "retrieved_requirements": [
             {

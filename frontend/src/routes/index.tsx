@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ArrowRight, Compass, FileText, Sparkles, Map, Target, Briefcase, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, ArrowUpRight, Compass, FileText, Sparkles, Map, MapPin, Target, Briefcase, Loader2 } from "lucide-react";
+import { getPublicJobs } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { ThemeSelector } from "@/components/theme-selector";
 import { useAuth } from "@/context/auth-context";
@@ -76,7 +78,7 @@ function Landing() {
             Find the path to your <span className="text-coral">next role</span>.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-balance text-base text-muted-foreground sm:text-lg">
-            Upload your resume, pick a target role, and we'll build a warm, week-by-week roadmap of skills, projects, and jobs that actually move you forward.
+            Upload your resume, pick a target role, and get a week-by-week roadmap of skills, projects, and live jobs ranked by fit.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild size="lg" className="h-12 rounded-full bg-coral px-7 text-base text-coral-foreground hover:bg-coral/90 shadow-warm">
@@ -91,23 +93,7 @@ function Landing() {
           <p className="mt-4 text-xs text-muted-foreground">Sign in with Google • Free during beta</p>
         </div>
 
-        {/* Mock preview card */}
-        <div className="mx-auto mt-14 max-w-4xl rounded-3xl border border-border bg-card p-2 shadow-warm">
-          <div className="rounded-2xl bg-background p-6 sm:p-10">
-            <div className="grid gap-6 sm:grid-cols-3">
-              {[
-                { label: "Profile match", value: "72%", color: "text-primary" },
-                { label: "Top gap", value: "MLOps", color: "text-coral" },
-                { label: "Job matches", value: "6 roles", color: "text-success" },
-              ].map((s) => (
-                <div key={s.label} className="rounded-2xl bg-muted/40 p-5">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{s.label}</p>
-                  <p className={`mt-2 font-display text-3xl font-bold ${s.color}`}>{s.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <LiveJobs />
       </section>
 
       {/* How it works */}
@@ -129,7 +115,7 @@ function Landing() {
               icon: Target,
               n: "02",
               title: "Pick a target role",
-              body: "Tell us where you'd like to land. We compare against thousands of real job posts.",
+              body: "Tell us where you'd like to land. We compare your profile against the skills that role needs.",
             },
             {
               icon: Map,
@@ -175,22 +161,6 @@ function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            { quote: "Finally a plan that didn't feel like a 200-tab roadmap.", who: "Aarav, CS '25" },
-            { quote: "The gap analysis showed me exactly what to learn next. Landed an internship in 6 weeks.", who: "Riya, Data Science new grad" },
-            { quote: "Felt like having a senior friend who actually checks in.", who: "Sam, Bootcamp grad" },
-          ].map((t) => (
-            <figure key={t.who} className="rounded-3xl border border-border bg-card p-7 shadow-soft">
-              <blockquote className="font-display text-lg leading-snug">"{t.quote}"</blockquote>
-              <figcaption className="mt-4 text-sm text-muted-foreground">— {t.who}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
         <div className="overflow-hidden rounded-3xl bg-primary p-10 text-primary-foreground shadow-warm sm:p-14">
@@ -198,7 +168,7 @@ function Landing() {
             <div>
               <h2 className="font-display text-3xl font-bold sm:text-4xl">Your next role is closer than you think.</h2>
               <p className="mt-2 max-w-xl text-primary-foreground/80">
-                Spend 5 minutes today. Walk away with a plan you'll actually use.
+                Upload a resume and get your first gap analysis in a few minutes.
               </p>
             </div>
             <Button asChild size="lg" className="h-12 rounded-full bg-coral px-7 text-base text-coral-foreground hover:bg-coral/90">
@@ -213,9 +183,57 @@ function Landing() {
       <footer className="border-t border-border/60 bg-background/60 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 text-xs text-muted-foreground sm:flex-row sm:px-6">
           <p>© {new Date().getFullYear()} CareerAtlas</p>
-          <p>Made with care for the early-career crowd.</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function LiveJobs() {
+  const { data } = useQuery({
+    queryKey: ["public-jobs"],
+    queryFn: getPublicJobs,
+    staleTime: 60 * 60 * 1000,
+    retry: false,
+  });
+  const jobs = data?.jobs ?? [];
+  // No placeholders: if there is nothing real to show, show nothing.
+  if (jobs.length === 0) return null;
+  const updated = data?.fetched_at
+    ? new Date(data.fetched_at).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })
+    : null;
+
+  return (
+    <div className="mx-auto mt-14 max-w-5xl">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 px-1">
+        <h2 className="font-display text-xl font-semibold">Hiring now</h2>
+        {updated && <p className="text-xs text-muted-foreground">Live from Adzuna · updated {updated}</p>}
+      </div>
+      <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {jobs.slice(0, 9).map((job) => (
+          <li key={job.apply_url}>
+            <a
+              href={job.apply_url}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex h-full flex-col rounded-2xl border border-border bg-card p-5 shadow-soft transition-shadow hover:shadow-warm"
+            >
+              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                {job.role_title}
+              </span>
+              <span className="mt-2 line-clamp-2 font-display font-semibold leading-snug">{job.title}</span>
+              <span className="mt-1 text-sm text-muted-foreground">{job.company || "Company not listed"}</span>
+              <span className="mt-auto flex items-center justify-between gap-2 pt-4 text-xs text-muted-foreground">
+                <span className="flex min-w-0 items-center gap-1">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate">{job.location || "Location not listed"}</span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
