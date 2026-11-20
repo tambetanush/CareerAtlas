@@ -43,7 +43,7 @@ def _safe_first(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _resolve_profile_context(user_id: str) -> tuple[str, str]:
-    query_role = "Target Role"
+    query_role = ""  # no role chosen yet; never shown to the user as a placeholder title
     location = "Remote"
 
     try:
@@ -189,7 +189,7 @@ def _insert_job_match(row: dict[str, Any]) -> None:
 
 
 @router.post("/", response_model=JobSearchResponse)
-async def research_jobs(req: ResearchJobsRequest, user_id: str = Depends(require_user_id)):
+def research_jobs(req: ResearchJobsRequest, user_id: str = Depends(require_user_id)):
     try:
         # 1) Resolve target role from Supabase.
         role_resp = (

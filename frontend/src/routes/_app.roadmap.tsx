@@ -64,7 +64,7 @@ const selectedRoleTitle = () =>
 
 function Roadmap() {
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const roleId = selectedRoleId();
+  const roleId = profile?.target_role_id || selectedRoleId();
   const { data: roadmap = [], isLoading } = useRoadmap(roleId);
   const { data: pathwayData } = useLatestPathway(roleId);
   const startMutation = useStartDeepResearch();
@@ -106,7 +106,7 @@ function Roadmap() {
   const sources = pathwayData?.sources ?? [];
   const rationale = pathwayData?.pathway?.rationale;
   const targetRole =
-    pathwayData?.target_role || selectedRoleTitle() || "your target role";
+    pathwayData?.target_role || profile?.target_role_title || selectedRoleTitle() || null;
 
   const completed = roadmap.filter((m) => m.status === "completed").length;
   const totalWeeks = roadmap.reduce((sum, m) => sum + (m.estimated_weeks ?? 0), 0);
@@ -125,8 +125,14 @@ function Roadmap() {
             Learning roadmap
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Web-grounded, citation-backed plan for{" "}
-            <span className="font-medium text-foreground">{targetRole}</span>.
+            Web-grounded, citation-backed plan
+            {targetRole ? (
+              <>
+                {" "}for <span className="font-medium text-foreground">{targetRole}</span>.
+              </>
+            ) : (
+              "."
+            )}
             {roadmap.length > 0 && (
               <>
                 {" "}

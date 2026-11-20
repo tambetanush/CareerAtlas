@@ -17,7 +17,6 @@ export const Route = createFileRoute("/_app/dashboard")({
 });
 
 function Dashboard() {
-  const isBrowser = typeof window !== "undefined";
   const { data: profile, isLoading: loadingProfile } = useProfile();
   const { data: roadmap = [], isLoading: loadingRoadmap } = useRoadmap();
   const { data: gaps = [], isLoading: loadingGaps } = useGapAnalysis();
@@ -47,12 +46,10 @@ function Dashboard() {
   )[0];
   const activeMilestone = roadmap.find((m: any) => m.status === "in_progress") || roadmap[0];
 
-  const localRoleTitle = isBrowser ? window.localStorage.getItem("careeratlas:selected_role_title") : null;
-  const targetRole =
+  const targetRole: string | null =
     roles.find((r: any) => r.id === profile.target_role_id)?.title ||
     profile.target_role_title ||
-    localRoleTitle ||
-    "your target role";
+    null;
 
   return (
     <motion.div className="space-y-8" variants={pageStagger} {...entrance}>
@@ -64,10 +61,21 @@ function Dashboard() {
         <div>
           <p className="text-sm text-muted-foreground">Welcome back,</p>
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            {firstName} 👋
+            {firstName}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            You're aiming for <span className="font-medium text-foreground">{targetRole}</span>. Here's where you stand today.
+            {targetRole ? (
+              <>
+                You're aiming for <span className="font-medium text-foreground">{targetRole}</span>. Here's where you stand today.
+              </>
+            ) : (
+              <>
+                <Link to="/profile" className="font-medium text-primary underline-offset-4 hover:underline">
+                  Pick a target role
+                </Link>{" "}
+                to get gaps, a roadmap, and job matches.
+              </>
+            )}
           </p>
         </div>
         <Button asChild className="rounded-full bg-coral text-coral-foreground hover:bg-coral/90 shadow-warm sm:self-start">

@@ -38,8 +38,25 @@ class Settings(BaseSettings):
     google_api_keys: list[str] = _get_google_api_keys()
     groq_api_key: str = os.getenv("GROQ_API_KEY", "")
     groq_model: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-    gap_analysis_model: str = os.getenv("GAP_ANALYSIS_MODEL", "gemini-1.5-flash")
     huggingface_api_key: str = os.getenv("HUGGINGFACE_API_KEY", "")
+
+    # Provider switch (see app/utils/llm_factory.py). One of:
+    # anthropic | gemini | groq | openai_compatible
+    llm_provider: str = os.getenv("LLM_PROVIDER", "groq")
+    anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
+    claude_model: str = os.getenv("CLAUDE_MODEL", "claude-haiku-5-5")
+    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    # Ollama: http://localhost:11434/v1, LM Studio: http://localhost:1234/v1
+    openai_compatible_base_url: str = os.getenv("OPENAI_COMPATIBLE_BASE_URL", "")
+    openai_compatible_api_key: str = os.getenv("OPENAI_COMPATIBLE_API_KEY", "")
+    openai_compatible_model: str = os.getenv("OPENAI_COMPATIBLE_MODEL", "llama3.1")
+    # Users may point the app at their own model server. On a hosted deploy that URL
+    # must not reach the server's private network (SSRF), so private hosts are only
+    # allowed when this is true (self-hosting).
+    allow_private_llm_urls: bool = os.getenv(
+        "ALLOW_PRIVATE_LLM_URLS",
+        "true" if os.getenv("ENVIRONMENT", "development").lower() in ("development", "dev", "local") else "false",
+    ).lower() == "true"
     
     # OpenRouter
     openrouter_api_key: str = os.getenv("OPENROUTER_API_KEY", "")

@@ -37,8 +37,47 @@ export class ApiError extends Error {
   }
 }
 
+// ── AI provider choice (browser-only; sent as headers, never stored server-side) ──
+
+export type LlmProvider = "anthropic" | "gemini" | "groq" | "openai_compatible";
+
+export interface LlmSettings {
+  provider: LlmProvider;
+  model?: string;
+  base_url?: string;
+  api_key?: string;
+}
+
+const LLM_STORAGE_KEY = "careeratlas:llm";
+
+export function loadLlmSettings(): LlmSettings | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(LLM_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as LlmSettings) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveLlmSettings(value: LlmSettings | null) {
+  if (typeof window === "undefined") return;
+  if (value) window.localStorage.setItem(LLM_STORAGE_KEY, JSON.stringify(value));
+  else window.localStorage.removeItem(LLM_STORAGE_KEY);
+}
+
+function llmHeaders(): Record<string, string> {
+  const s = loadLlmSettings();
+  if (!s?.provider) return {};
+  const h: Record<string, string> = { "X-LLM-Provider": s.provider };
+  if (s.model) h["X-LLM-Model"] = s.model;
+  if (s.base_url) h["X-LLM-Base-URL"] = s.base_url;
+  if (s.api_key) h["X-LLM-Api-Key"] = s.api_key;
+  return h;
+}
+
 async function authHeaders(extra: Record<string, string> = {}): Promise<Record<string, string>> {
-  const headers: Record<string, string> = { ...extra };
+  const headers: Record<string, string> = { ...llmHeaders(), ...extra };
   if (disableAuth) return headers;
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
@@ -119,6 +158,10 @@ export async function selectResume(resumeId: string) {
 
 // ── Profile editing ─────────────────────────────────────────────────────────
 
+export async function getSavedProfile() {
+  return request<{ success: boolean; target_role_id: string | null }>("/api/parse-resume/profile");
+}
+
 export async function updateTargetRole(targetRoleId: string) {
   return request<{ success: boolean; target_role_id: string }>(
     "/api/parse-resume/profile",
@@ -171,6 +214,42 @@ export async function getTargetRoles(): Promise<TargetRole[]> {
     { method: "GET" },
   );
   return data.roles || [];
+}
+
+// ── AI provider panel ─────────────────────────────────────────────────────
+
+export interface LlmProviderInfo {
+  id: LlmProvider;
+  server_key: boolean;
+  default_model: string;
+}
+
+export async function getLlmProviders() {
+  return request<{ default: LlmProvider; providers: LlmProviderInfo[] }>("/api/llm/providers");
+}
+
+export async function testLlmConnection() {
+  return request<{ provider: LlmProvider; model: string; user_override: boolean; reply: string }>(
+    "/api/llm/test",
+    { method: "POST" },
+  );
+}
+
+// ── Public jobs (landing page, no auth) ───────────────────────────────────
+
+export interface PublicJob {
+  title: string;
+  company: string | null;
+  location: string | null;
+  apply_url: string;
+  role_title: string;
+  salary_min: number | null;
+  salary_max: number | null;
+  posted_at: string | null;
+}
+
+export async function getPublicJobs() {
+  return request<{ jobs: PublicJob[]; fetched_at: string | null }>("/api/public-jobs/");
 }
 
 // ── Gap analysis ───────────────────────────────────────────────────────────

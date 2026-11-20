@@ -81,3 +81,79 @@ def test_commit_context_with_span():
 def test_commit_context_marks_100_plus():
     ctx = service._commit_context({"commit_count": 150})
     assert ctx.startswith("150+ owner-authored commits")
+
+
+# ── evidence: whole-word language match ─────────────────────────────────────
+
+def test_one_letter_language_does_not_back_unrelated_skill():
+    skills = [SkillEvidence(skill="Docker", evidence="containers are used", confidence="high")]
+    out = service._filter_evidence(skills, [], {"C": 60.0, "R": 40.0})
+    assert out[0].confidence == "low"  # "Docker" contains "c" and "r" but isn't backed by C or R
+
+
+def test_one_letter_language_still_backs_itself():
+    skills = [SkillEvidence(skill="C", evidence="most code is C", confidence="high")]
+    assert service._filter_evidence(skills, [], {"C": 60.0})[0].confidence == "high"
+
+
+# ── repo fan-out: LLM concurrency cap + summary failure ──────────────────────
+
+import asyncio
+
+from app.github_analysis.schemas import GitHubRepoInfo
+
+
+def _repo(i):
+    return GitHubRepoInfo(name=f"me/r{i}", owner="me", url="u", stargazerCount=0, isOwner=True)
+
+
+def _fake_github(monkeypatch, n_repos):
+    async def ok(*a, **k):
+        return "me"
+
+    async def tree(*a, **k):
+        return ["README.md", "main.py"]
+
+    async def langs(*a, **k):
+        return {"Python": 100.0}
+
+    async def stats(*a, **k):
+        return {"commit_count": 3}
+
+    async def content(*a, **k):
+        return "x" * 5000
+
+    async def top(*a, **k):
+        return [_repo(i) for i in range(n_repos)]
+
+    for name, fn in [("fetch_authenticated_login", ok), ("fetch_repo_file_tree", tree), ("fetch_languages", langs),
+                     ("fetch_commit_stats", stats), ("fetch_file_content", content), ("fetch_top_repositories", top)]:
+        monkeypatch.setattr(service, name, fn)
+
+
+async def test_repo_llm_calls_capped_and_summary_failure_survives(monkeypatch):
+    _fake_github(monkeypatch, 6)
+    state = {"now": 0, "peak": 0, "prompt_chars": 0}
+
+    class _RepoChain:
+        async def ainvoke(self, payload):
+            state["now"] += 1
+            state["peak"] = max(state["peak"], state["now"])
+            state["prompt_chars"] = max(state["prompt_chars"], len(payload["file_contents"]))
+            await asyncio.sleep(0.01)
+            state["now"] -= 1
+            return service.RepoAnalysisResult(summary="s", coding_behavior="b", inferred_skills=[])
+
+    class _BrokenProfileChain:
+        async def ainvoke(self, payload):
+            raise RuntimeError("rate limited")
+
+    monkeypatch.setattr(
+        service, "build_structured_chain",
+        lambda prompt, schema, temperature=0.2: _RepoChain() if schema is service.RepoAnalysisResult else _BrokenProfileChain(),
+    )
+    out = await service.analyze_selected_repositories("u1", [f"me/r{i}" for i in range(6)], "tok")
+    assert state["peak"] <= service.MAX_PARALLEL_REPO_LLM_CALLS
+    assert state["prompt_chars"] < 2 * (service.MAX_FILE_CHARS + 100)  # two 5k files truncated to ~2k each
+    assert len(out["repo_analyses"]) == 6
+    assert out["profile"]["summary"] == "Profile summary unavailable right now."

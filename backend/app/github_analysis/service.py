@@ -1,5 +1,6 @@
-import logging
 import asyncio
+import contextlib
+import logging
 from typing import List, Dict, Any
 from app.github_analysis.schemas import GitHubRepoInfo
 from app.github_analysis.github_api import (
@@ -10,7 +11,11 @@ from app.github_analysis.github_api import (
     fetch_commit_stats,
     fetch_authenticated_login,
 )
-from app.utils.llm_factory import build_groq_structured_chain
+from app.job_hunter.agent import skill_in_text
+from app.utils.llm_factory import build_structured_chain
+
+MAX_FILE_CHARS = 2000  # ~2k chars per file keeps a repo prompt under provider tokens-per-minute limits
+MAX_PARALLEL_REPO_LLM_CALLS = 3  # each repo prompt is large; more at once hits rate limits
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, Field
 
@@ -194,12 +199,15 @@ def select_files(file_tree: List[str], cap: int = 12) -> List[str]:
 def _filter_evidence(skills: List[SkillEvidence], fetched_paths: List[str], languages: Dict[str, float]) -> List[SkillEvidence]:
     """CATRK-13: any skill whose evidence doesn't quote a fetched path or a real
     language gets its confidence capped to low — overconfident guesses can't survive."""
-    path_blob = " ".join(fetched_paths).lower()
+    paths = [p.lower() for p in fetched_paths if p]
     lang_names = {lang.lower() for lang in languages}
     out = []
     for s in skills:
         ev = (s.evidence or "").lower()
-        backed = any(p and p in ev for p in path_blob.split()) or any(lang in ev or lang in s.skill.lower() for lang in lang_names)
+        # Whole-word language match: a one-letter language like "C" or "R" must not back every skill.
+        backed = any(p in ev for p in paths) or any(
+            skill_in_text(lang, ev) or skill_in_text(lang, s.skill.lower()) for lang in lang_names
+        )
         out.append(s if backed else SkillEvidence(skill=s.skill, evidence=s.evidence, confidence="low"))
     return out
 
@@ -214,7 +222,9 @@ def _commit_context(stats: Dict[str, Any]) -> str:
     return f"{n}{'+' if n >= 100 else ''} owner-authored commits{span}"
 
 
-async def analyze_repository(repo: GitHubRepoInfo, login: str, access_token: str) -> Dict[str, Any]:
+async def analyze_repository(
+    repo: GitHubRepoInfo, login: str, access_token: str, llm_slots: asyncio.Semaphore | None = None
+) -> Dict[str, Any]:
     short_name = repo.name.split("/")[-1]
 
     file_tree, languages, commit_stats = await asyncio.gather(
@@ -228,16 +238,18 @@ async def analyze_repository(repo: GitHubRepoInfo, login: str, access_token: str
     file_contents = "--- FILE TREE (Partial) ---\n"
     file_contents += "\n".join(file_tree[:50]) + ("\n...(truncated)\n" if len(file_tree) > 50 else "\n")
 
-    for file_path in selected_files:
-        content = await fetch_file_content(repo.owner, short_name, file_path, access_token)
+    contents = await asyncio.gather(
+        *[fetch_file_content(repo.owner, short_name, f, access_token) for f in selected_files]
+    )
+    for file_path, content in zip(selected_files, contents):
         if content:
-            if len(content) > 5000:
-                content = content[:5000] + "\n...(truncated)"
+            if len(content) > MAX_FILE_CHARS:
+                content = content[:MAX_FILE_CHARS] + "\n...(truncated)"
             file_contents += f"\n\n--- FILE: {file_path} ---\n{content}\n"
 
     lang_str = ", ".join(f"{lang} {p}%" for lang, p in sorted(languages.items(), key=lambda x: -x[1])) or "unknown"
 
-    chain = build_groq_structured_chain(REPO_ANALYSIS_PROMPT, RepoAnalysisResult, temperature=0.1)
+    chain = build_structured_chain(REPO_ANALYSIS_PROMPT, RepoAnalysisResult, temperature=0.1)
 
     base = {
         "summary": "Analysis failed",
@@ -247,14 +259,15 @@ async def analyze_repository(repo: GitHubRepoInfo, login: str, access_token: str
         **commit_stats,
     }
     try:
-        result: RepoAnalysisResult = await chain.ainvoke({
-            "repo_name": repo.name,
-            "description": repo.description or "No description",
-            "language": repo.primaryLanguage or "Unknown",
-            "languages": lang_str,
-            "commit_context": _commit_context(commit_stats),
-            "file_contents": file_contents,
-        })
+        async with llm_slots or contextlib.nullcontext():
+            result: RepoAnalysisResult = await chain.ainvoke({
+                "repo_name": repo.name,
+                "description": repo.description or "No description",
+                "language": repo.primaryLanguage or "Unknown",
+                "languages": lang_str,
+                "commit_context": _commit_context(commit_stats),
+                "file_contents": file_contents,
+            })
         skills = _filter_evidence(result.inferred_skills, selected_files, languages)
         return {**base, "summary": result.summary, "coding_behavior": result.coding_behavior, "inferred_skills": skills}
     except Exception as e:
@@ -269,8 +282,9 @@ async def analyze_selected_repositories(user_id: str, repos: List[str], access_t
     if not selected_repos_info:
         raise ValueError("No matching repositories found")
 
+    llm_slots = asyncio.Semaphore(MAX_PARALLEL_REPO_LLM_CALLS)
     analyses = await asyncio.gather(*[
-        analyze_repository(repo, login, access_token) for repo in selected_repos_info
+        analyze_repository(repo, login, access_token, llm_slots) for repo in selected_repos_info
     ])
 
     # Format for overall analysis
@@ -282,11 +296,15 @@ async def analyze_selected_repositories(user_id: str, repos: List[str], access_t
         repo_analyses_text += f"Coding Behavior: {analysis['coding_behavior']}\n"
         repo_analyses_text += f"Skills: {skill_names}\n"
 
-    chain = build_groq_structured_chain(PROFILE_ANALYSIS_PROMPT, ProfileAnalysisResult, temperature=0.1)
+    chain = build_structured_chain(PROFILE_ANALYSIS_PROMPT, ProfileAnalysisResult, temperature=0.1)
 
-    overall_result: ProfileAnalysisResult = await chain.ainvoke({
-        "repo_analyses": repo_analyses_text
-    })
+    try:
+        overall_result: ProfileAnalysisResult = await chain.ainvoke({"repo_analyses": repo_analyses_text})
+        summary, behavior = overall_result.overall_summary, overall_result.overall_coding_behavior
+    except Exception:
+        # Per-repo results are still worth returning when only the summary call fails.
+        logger.exception("GitHub profile summary failed")
+        summary = behavior = "Profile summary unavailable right now."
 
     # Deduplicated skill-name list (display only — the source of truth is per-repo evidence).
     display_skills = sorted({s.skill for a in analyses for s in a["inferred_skills"]})
@@ -294,8 +312,8 @@ async def analyze_selected_repositories(user_id: str, repos: List[str], access_t
     return {
         "repo_analyses": {r.name: a for r, a in zip(selected_repos_info, analyses)},
         "profile": {
-            "summary": overall_result.overall_summary,
-            "coding_behavior": overall_result.overall_coding_behavior,
+            "summary": summary,
+            "coding_behavior": behavior,
             "skills": display_skills,
         },
     }

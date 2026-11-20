@@ -13,7 +13,7 @@ from pydantic import ValidationError
 from phonenumbers import PhoneNumberFormat
 
 from app.resume_extraction.schemas import ResumeExtraction
-from app.utils.llm_factory import invoke_gemini
+from app.utils.llm_factory import invoke_llm
 
 logger = logging.getLogger(__name__)
 
@@ -315,8 +315,7 @@ END_RESUME_TEXT>>>
 
 
 def _invoke_llm(prompt: str) -> str:
-    # Resume extraction is intentionally pinned to Gemini for better parsing quality.
-    response = invoke_gemini(prompt, temperature=0.0)
+    response = invoke_llm(prompt, temperature=0.0)
     content = getattr(response, "content", "")
     if isinstance(content, str):
         raw_text = content

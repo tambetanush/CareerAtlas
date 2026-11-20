@@ -33,6 +33,7 @@ dependencies = [
     "numpy>=1.26.0",
     "sentry-sdk>=2.60.0",
     "nest-asyncio>=1.6.0",
+    "langchain-anthropic>=1.0",
 ]
 
 [dependency-groups]

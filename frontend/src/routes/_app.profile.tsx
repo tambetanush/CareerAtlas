@@ -30,6 +30,7 @@ import {
   useUpdateExperience,
 } from "@/hooks/queries";
 import { NoProfileView } from "@/components/no-profile-view";
+import { AiProviderPanel } from "@/components/ai-provider-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -392,6 +393,8 @@ function Profile() {
           {education.length === 0 && <p className="text-sm text-muted-foreground">No education listed.</p>}
         </ul>
       </section>
+
+      <AiProviderPanel />
 
       <RolePickerDialog
         open={roleModalOpen}
